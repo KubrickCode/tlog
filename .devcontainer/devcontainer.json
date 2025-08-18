@@ -3,5 +3,10 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "workspace",
   "workspaceFolder": "/workspaces/tlog",
+  "features": {
+    "./local-features/just": {},
+    "./local-features/go": {},
+    "./local-features/node": {}
+  },
   "remoteUser": "root"
 }
