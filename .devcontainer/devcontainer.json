@@ -1,0 +1,7 @@
+{
+  "name": "tlog",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
+  "workspaceFolder": "/workspaces/tlog",
+  "remoteUser": "root"
+}
