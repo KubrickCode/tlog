@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "bradgashler.htmltagwrap",
+    "chunsen.bracket-select",
+    "codezombiech.gitignore",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "formulahendry.code-runner",
+    "mhutchie.git-graph",
+    "skellock.just",
+    "streetsidesoftware.code-spell-checker",
+    "wayou.vscode-todo-highlight",
+    "usernamehw.errorlens",
+    "jkearins.action-buttons-ext"
+  ]
+}

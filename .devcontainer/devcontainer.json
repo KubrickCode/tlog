@@ -4,6 +4,7 @@
   "service": "workspace",
   "workspaceFolder": "/workspaces/tlog",
   "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "./local-features/just": {},
     "./local-features/go": {},
     "./local-features/node": {}

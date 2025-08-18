@@ -1,0 +1,28 @@
+{
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.renderWhitespace": "boundary",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.folding": true,
+  "editor.foldingStrategy": "auto",
+  "editor.foldingImportsByDefault": true,
+  "files.insertFinalNewline": true,
+  "files.autoSave": "onFocusChange",
+  "actionButtons": {
+    "commands": [
+      {
+        "name": "Push",
+        "terminalName": "Push",
+        "color": "green",
+        "command": "git add . && git commit --amend --no-edit && git push -f"
+      }
+    ],
+    "defaultColor": "white",
+    "reloadButton": "↻",
+    "loadNpmCommands": false
+  }
+}
