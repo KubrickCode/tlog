@@ -25,7 +25,8 @@
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package",
-    "install": "code --install-extension tlog-vscode-0.0.1.vsix"
+    "install": "code --install-extension tlog-vscode-0.0.1.vsix",
+    "vsce-publish": "vsce publish"
   },
   "devDependencies": {
     "@types/node": "24.3.0",
