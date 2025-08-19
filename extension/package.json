@@ -2,7 +2,7 @@
   "name": "tlog-vscode",
   "displayName": "tlog",
   "description": "Transient Log - Quick console.log with [TLOG] prefix for easy identification and removal",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "KubrickCode",
   "license": "MIT",
   "repository": {
@@ -31,6 +31,11 @@
         "command": "tlog.insertTlog",
         "title": "Insert TLOG",
         "category": "tlog"
+      },
+      {
+        "command": "tlog.removeAllTlogs",
+        "title": "Remove All TLOGs",
+        "category": "tlog"
       }
     ],
     "keybindings": [
@@ -39,13 +44,19 @@
         "key": "ctrl+shift+t",
         "mac": "cmd+shift+t",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "tlog.removeAllTlogs",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
       }
     ]
   },
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package",
-    "install": "code --install-extension tlog-vscode-0.1.1.vsix",
+    "install": "code --install-extension tlog-vscode-0.1.2.vsix",
     "vsce-publish": "vsce publish"
   },
   "devDependencies": {
