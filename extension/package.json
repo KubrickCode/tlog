@@ -1,8 +1,8 @@
 {
   "name": "tlog-vscode",
   "displayName": "tlog",
-  "description": "Transient Log - Temporary logging utility for JavaScript developers",
-  "version": "0.0.1",
+  "description": "Transient Log - Quick console.log with [TLOG] prefix for easy identification and removal",
+  "version": "0.1.0",
   "publisher": "KubrickCode",
   "license": "MIT",
   "repository": {
@@ -13,19 +13,39 @@
     "vscode": "^1.103.0"
   },
   "categories": [
+    "Snippets",
     "Other"
   ],
-  "activationEvents": [
-    "onStartupFinished"
+  "keywords": [
+    "console.log",
+    "logging",
+    "debug",
+    "tlog",
+    "temporary"
   ],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": []
+    "commands": [
+      {
+        "command": "tlog.insertTlog",
+        "title": "Insert TLOG",
+        "category": "tlog"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "tlog.insertTlog",
+        "key": "ctrl+shift+t",
+        "mac": "cmd+shift+t",
+        "when": "editorTextFocus"
+      }
+    ]
   },
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package",
-    "install": "code --install-extension tlog-vscode-0.0.1.vsix",
+    "install": "code --install-extension tlog-vscode-0.1.0.vsix",
     "vsce-publish": "vsce publish"
   },
   "devDependencies": {
