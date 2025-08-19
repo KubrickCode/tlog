@@ -56,7 +56,7 @@
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package",
-    "install": "code --install-extension tlog-vscode-0.1.2.vsix",
+    "install-package": "code --install-extension tlog-vscode-0.1.2.vsix",
     "vsce-publish": "vsce publish"
   },
   "devDependencies": {
