@@ -66,12 +66,19 @@ const removeFromCurrentFile = async () => {
   }
 
   const document = editor.document;
-  const text = document.getText();
+  const edit = new vscode.WorkspaceEdit();
+  const linesToDelete: vscode.Range[] = [];
 
-  const tlogRegex = /^.*console\.log\(.*\[TLOG\].*\).*;?\s*$/gm;
-  const matches = Array.from(text.matchAll(tlogRegex));
+  for (let i = 0; i < document.lineCount; i++) {
+    const line = document.lineAt(i);
+    const tlogRegex = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
 
-  if (matches.length === 0) {
+    if (tlogRegex.test(line.text)) {
+      linesToDelete.push(line.rangeIncludingLineBreak);
+    }
+  }
+
+  if (linesToDelete.length === 0) {
     vscode.window.showInformationMessage(
       "No TLOG statements found in current file"
     );
@@ -79,7 +86,7 @@ const removeFromCurrentFile = async () => {
   }
 
   const confirm = await vscode.window.showWarningMessage(
-    `Found ${matches.length} TLOG statement(s) in current file. Remove them?`,
+    `Found ${linesToDelete.length} TLOG statement(s) in current file. Remove them?`,
     "Yes",
     "No"
   );
@@ -88,20 +95,15 @@ const removeFromCurrentFile = async () => {
     return;
   }
 
-  const newText = text.replace(tlogRegex, "");
-
-  const edit = new vscode.WorkspaceEdit();
-  const fullRange = new vscode.Range(
-    document.positionAt(0),
-    document.positionAt(text.length)
-  );
-  edit.replace(document.uri, fullRange, newText);
+  for (const range of linesToDelete) {
+    edit.delete(document.uri, range);
+  }
 
   const success = await vscode.workspace.applyEdit(edit);
 
   if (success) {
     vscode.window.showInformationMessage(
-      `Removed ${matches.length} TLOG statement(s) from current file`
+      `Removed ${linesToDelete.length} TLOG statement(s) from current file`
     );
   } else {
     vscode.window.showErrorMessage("Failed to remove TLOG statements");
@@ -119,29 +121,30 @@ const removeFromWorkspace = async () => {
     "**/node_modules/**"
   );
 
+  const edit = new vscode.WorkspaceEdit();
   let totalMatches = 0;
-  const filesToEdit: {
-    uri: vscode.Uri;
-    newText: string;
-    matchCount: number;
-  }[] = [];
+  let filesToEditCount = 0;
 
   for (const file of files) {
     try {
       const document = await vscode.workspace.openTextDocument(file);
-      const text = document.getText();
+      const linesToDelete: vscode.Range[] = [];
 
-      const tlogRegex = /^.*console\.log\(.*\[TLOG\].*\).*;?\s*$/gm;
-      const matches = Array.from(text.matchAll(tlogRegex));
+      for (let i = 0; i < document.lineCount; i++) {
+        const line = document.lineAt(i);
+        const tlogRegex = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
 
-      if (matches.length > 0) {
-        const newText = text.replace(tlogRegex, "");
-        filesToEdit.push({
-          uri: file,
-          newText: newText,
-          matchCount: matches.length,
-        });
-        totalMatches += matches.length;
+        if (tlogRegex.test(line.text)) {
+          linesToDelete.push(line.rangeIncludingLineBreak);
+          totalMatches++;
+        }
+      }
+
+      if (linesToDelete.length > 0) {
+        filesToEditCount++;
+        for (const range of linesToDelete) {
+          edit.delete(file, range);
+        }
       }
     } catch (error) {
       console.error(`Error processing file ${file.fsPath}:`, error);
@@ -156,7 +159,7 @@ const removeFromWorkspace = async () => {
   }
 
   const confirm = await vscode.window.showWarningMessage(
-    `Found ${totalMatches} TLOG statement(s) in ${filesToEdit.length} file(s). Remove them all?`,
+    `Found ${totalMatches} TLOG statement(s) in ${filesToEditCount} file(s). Remove them all?`,
     "Yes",
     "No"
   );
@@ -165,22 +168,11 @@ const removeFromWorkspace = async () => {
     return;
   }
 
-  const edit = new vscode.WorkspaceEdit();
-
-  for (const fileEdit of filesToEdit) {
-    const document = await vscode.workspace.openTextDocument(fileEdit.uri);
-    const fullRange = new vscode.Range(
-      document.positionAt(0),
-      document.positionAt(document.getText().length)
-    );
-    edit.replace(fileEdit.uri, fullRange, fileEdit.newText);
-  }
-
   const success = await vscode.workspace.applyEdit(edit);
 
   if (success) {
     vscode.window.showInformationMessage(
-      `Removed ${totalMatches} TLOG statement(s) from ${filesToEdit.length} file(s)`
+      `Removed ${totalMatches} TLOG statement(s) from ${filesToEditCount} file(s)`
     );
   } else {
     vscode.window.showErrorMessage("Failed to remove TLOG statements");
