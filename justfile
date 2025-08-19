@@ -6,6 +6,9 @@ extension_dir := root_dir + "/extension"
 deps:
   cd "{{ extension_dir }}" && yarn install
 
+install-package:
+  cd "{{ extension_dir }}" && yarn install-package
+
 package:
   cd "{{ extension_dir }}" && yarn compile && yarn package
 
