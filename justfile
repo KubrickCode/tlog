@@ -13,4 +13,4 @@ package:
   cd "{{ extension_dir }}" && yarn compile && yarn package
 
 publish:
-  cd "{{ extension_dir }}" && yarn vsce-publish
+  cd "{{ extension_dir }}" && yarn vsce-publish && yarn ovsx-publish
