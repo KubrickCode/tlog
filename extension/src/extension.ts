@@ -1,4 +1,6 @@
 import * as vscode from "vscode";
+import * as cp from "child_process";
+import { rgPath } from "@vscode/ripgrep";
 
 export const activate = (context: vscode.ExtensionContext) => {
   const insertTlogCommand = vscode.commands.registerCommand(
@@ -111,72 +113,81 @@ const removeFromCurrentFile = async () => {
 };
 
 const removeFromWorkspace = async () => {
-  if (!vscode.workspace.workspaceFolders) {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) {
     vscode.window.showWarningMessage("No workspace folder found");
     return;
   }
 
-  const files = await vscode.workspace.findFiles(
-    "**/*.{js,ts,jsx,tsx,vue,svelte}",
-    "**/node_modules/**"
-  );
+  const workspacePath = workspaceFolders[0].uri.fsPath;
 
-  const edit = new vscode.WorkspaceEdit();
-  let totalMatches = 0;
-  let filesToEditCount = 0;
+  const searchTerm = "console.log.*[TLOG]";
+  const command = `"${rgPath}" --vimgrep "${searchTerm}" "${workspacePath}" -g "!**/node_modules/**"`;
 
-  for (const file of files) {
-    try {
-      const document = await vscode.workspace.openTextDocument(file);
-      const linesToDelete: vscode.Range[] = [];
+  vscode.window.showInformationMessage("Searching for TLOGs using Ripgrep...");
 
-      for (let i = 0; i < document.lineCount; i++) {
-        const line = document.lineAt(i);
-        const tlogRegex = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
-
-        if (tlogRegex.test(line.text)) {
-          linesToDelete.push(line.rangeIncludingLineBreak);
-          totalMatches++;
-        }
-      }
-
-      if (linesToDelete.length > 0) {
-        filesToEditCount++;
-        for (const range of linesToDelete) {
-          edit.delete(file, range);
-        }
-      }
-    } catch (error) {
-      console.error(`Error processing file ${file.fsPath}:`, error);
+  cp.exec(command, async (error, stdout, stderr) => {
+    if (error && !stdout) {
+      vscode.window.showErrorMessage(`Ripgrep execution failed: ${stderr}`);
+      return;
     }
-  }
 
-  if (totalMatches === 0) {
-    vscode.window.showInformationMessage(
-      "No TLOG statements found in workspace"
+    const results = stdout.trim().split("\n");
+    if (results.length === 0 || results[0] === "") {
+      vscode.window.showInformationMessage(
+        "No TLOG statements found in workspace"
+      );
+      return;
+    }
+
+    const confirm = await vscode.window.showWarningMessage(
+      `Found ${results.length} TLOG statement(s). Remove them all?`,
+      "Yes",
+      "No"
     );
-    return;
-  }
 
-  const confirm = await vscode.window.showWarningMessage(
-    `Found ${totalMatches} TLOG statement(s) in ${filesToEditCount} file(s). Remove them all?`,
-    "Yes",
-    "No"
-  );
+    if (confirm !== "Yes") {
+      return;
+    }
 
-  if (confirm !== "Yes") {
-    return;
-  }
+    const edit = new vscode.WorkspaceEdit();
+    const fileLineMap = new Map<string, number[]>();
 
-  const success = await vscode.workspace.applyEdit(edit);
+    results.forEach((line) => {
+      const parts = line.split(":");
+      if (parts.length >= 2) {
+        const filePath = parts[0];
+        const lineNumber = parseInt(parts[1], 10) - 1;
 
-  if (success) {
-    vscode.window.showInformationMessage(
-      `Removed ${totalMatches} TLOG statement(s) from ${filesToEditCount} file(s)`
-    );
-  } else {
-    vscode.window.showErrorMessage("Failed to remove TLOG statements");
-  }
+        if (!fileLineMap.has(filePath)) {
+          fileLineMap.set(filePath, []);
+        }
+        fileLineMap.get(filePath)?.push(lineNumber);
+      }
+    });
+
+    for (const [filePath, lineNumbers] of fileLineMap.entries()) {
+      const uri = vscode.Uri.file(filePath);
+      const document = await vscode.workspace.openTextDocument(uri);
+
+      lineNumbers.sort((a, b) => b - a);
+
+      for (const lineNumber of lineNumbers) {
+        const range = document.lineAt(lineNumber).rangeIncludingLineBreak;
+        edit.delete(uri, range);
+      }
+    }
+
+    const success = await vscode.workspace.applyEdit(edit);
+
+    if (success) {
+      vscode.window.showInformationMessage(
+        `Removed ${results.length} TLOG statement(s)`
+      );
+    } else {
+      vscode.window.showErrorMessage("Failed to remove TLOG statements");
+    }
+  });
 };
 
 export const deactivate = () => {};
