@@ -2,7 +2,7 @@
   "name": "tlog-vscode",
   "displayName": "tlog",
   "description": "Transient Log - Quick console.log with [TLOG] prefix for easy identification and removal",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publisher": "KubrickCode",
   "license": "MIT",
   "repository": {
@@ -56,7 +56,7 @@
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package",
-    "install-package": "code --install-extension tlog-vscode-0.1.5.vsix",
+    "install-package": "code --install-extension tlog-vscode-0.1.6.vsix",
     "vsce-publish": "vsce publish",
     "ovsx-publish": "ovsx publish"
   },
