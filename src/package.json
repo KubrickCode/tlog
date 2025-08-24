@@ -55,7 +55,7 @@
   },
   "scripts": {
     "compile": "tsc -p ./",
-    "package": "vsce package",
+    "package": "vsce package --out versions/",
     "install-package": "code --install-extension versions/tlog-vscode-0.1.7.vsix",
     "vsce-publish": "vsce publish",
     "ovsx-publish": "ovsx publish"
