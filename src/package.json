@@ -24,7 +24,7 @@
     "temporary"
   ],
   "activationEvents": [],
-  "main": "./out/main.js",
+  "main": "./out/src/main.js",
   "contributes": {
     "commands": [
       {
