@@ -18,11 +18,25 @@ export interface TlogFileGroup {
   items: TlogItem[];
 }
 
-export class TlogTreeDataProvider implements vscode.TreeDataProvider<TlogTreeItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<TlogTreeItem | undefined | null | void> = new vscode.EventEmitter<TlogTreeItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<TlogTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+export interface TlogDirectoryNode {
+  name: string;
+  fullPath: string;
+  children: Map<string, TlogDirectoryNode>;
+  files: TlogFileGroup[];
+}
 
-  private tlogGroups: TlogFileGroup[] = [];
+export class TlogTreeDataProvider
+  implements vscode.TreeDataProvider<TlogTreeItem>
+{
+  private _onDidChangeTreeData: vscode.EventEmitter<
+    TlogTreeItem | undefined | null | void
+  > = new vscode.EventEmitter<TlogTreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<
+    TlogTreeItem | undefined | null | void
+  > = this._onDidChangeTreeData.event;
+
+  private rootNode: TlogDirectoryNode | null = null;
+  private workspacePath: string = "";
 
   constructor() {
     this.refresh();
@@ -30,7 +44,7 @@ export class TlogTreeDataProvider implements vscode.TreeDataProvider<TlogTreeIte
 
   refresh(): void {
     this.scanTlogs().then((groups) => {
-      this.tlogGroups = groups;
+      this.rootNode = this.buildDirectoryTree(groups);
       this._onDidChangeTreeData.fire();
     });
   }
@@ -41,25 +55,109 @@ export class TlogTreeDataProvider implements vscode.TreeDataProvider<TlogTreeIte
 
   getChildren(element?: TlogTreeItem): Thenable<TlogTreeItem[]> {
     if (!element) {
-      return Promise.resolve(this.tlogGroups.map(group => new TlogFileTreeItem(group)));
+      return Promise.resolve(this.getRootChildren());
+    }
+
+    if (element instanceof TlogDirectoryTreeItem) {
+      return Promise.resolve(this.getDirectoryChildren(element.node));
     }
 
     if (element instanceof TlogFileTreeItem) {
-      return Promise.resolve(element.group.items.map(item => new TlogItemTreeItem(item)));
+      return Promise.resolve(
+        element.group.items.map((item) => new TlogItemTreeItem(item))
+      );
     }
 
     return Promise.resolve([]);
+  }
+
+  private getRootChildren(): TlogTreeItem[] {
+    if (!this.rootNode) return [];
+
+    const children: TlogTreeItem[] = [];
+
+    for (const [name, node] of this.rootNode.children) {
+      children.push(new TlogDirectoryTreeItem(name, node));
+    }
+
+    for (const fileGroup of this.rootNode.files) {
+      children.push(new TlogFileTreeItem(fileGroup));
+    }
+
+    return children.sort((a, b) => {
+      if (a instanceof TlogDirectoryTreeItem && b instanceof TlogFileTreeItem)
+        return -1;
+      if (a instanceof TlogFileTreeItem && b instanceof TlogDirectoryTreeItem)
+        return 1;
+      return a.label!.localeCompare(b.label!);
+    });
+  }
+
+  private getDirectoryChildren(node: TlogDirectoryNode): TlogTreeItem[] {
+    const children: TlogTreeItem[] = [];
+
+    for (const [name, childNode] of node.children) {
+      children.push(new TlogDirectoryTreeItem(name, childNode));
+    }
+
+    for (const fileGroup of node.files) {
+      children.push(new TlogFileTreeItem(fileGroup));
+    }
+
+    return children.sort((a, b) => {
+      if (a instanceof TlogDirectoryTreeItem && b instanceof TlogFileTreeItem)
+        return -1;
+      if (a instanceof TlogFileTreeItem && b instanceof TlogDirectoryTreeItem)
+        return 1;
+      return a.label!.localeCompare(b.label!);
+    });
+  }
+
+  private buildDirectoryTree(groups: TlogFileGroup[]): TlogDirectoryNode {
+    const root: TlogDirectoryNode = {
+      name: "",
+      fullPath: this.workspacePath,
+      children: new Map(),
+      files: [],
+    };
+
+    groups.forEach((group) => {
+      const relativePath = path.relative(this.workspacePath, group.filePath);
+      const pathParts = relativePath.split(path.sep);
+
+      let currentNode = root;
+      let currentPath = this.workspacePath;
+
+      pathParts.forEach((part) => {
+        currentPath = path.join(currentPath, part);
+        if (!currentNode.children.has(part)) {
+          currentNode.children.set(part, {
+            name: part,
+            fullPath: currentPath,
+            children: new Map(),
+            files: [],
+          });
+        }
+        currentNode = currentNode.children.get(part)!;
+      });
+
+      currentNode.files.push(group);
+    });
+
+    return root;
   }
 
   private async scanTlogs(): Promise<TlogFileGroup[]> {
     const workspacePath = this.getWorkspacePath();
     if (!workspacePath) return [];
 
+    this.workspacePath = workspacePath;
+
     try {
       const searchResults = await this.searchTlogsWithRipgrep(workspacePath);
       return this.groupTlogsByFile(searchResults);
     } catch (error) {
-      console.error('Failed to scan TLOGs:', error);
+      console.error("Failed to scan TLOGs:", error);
       return [];
     }
   }
@@ -109,7 +207,7 @@ export class TlogTreeDataProvider implements vscode.TreeDataProvider<TlogTreeIte
         filePath,
         line: lineNumber - 1, // Convert to 0-based
         column: columnNumber - 1, // Convert to 0-based
-        content
+        content,
       };
 
       if (!groups.has(filePath)) {
@@ -120,7 +218,7 @@ export class TlogTreeDataProvider implements vscode.TreeDataProvider<TlogTreeIte
 
     return Array.from(groups.entries()).map(([filePath, items]) => ({
       filePath,
-      items: items.sort((a, b) => a.line - b.line)
+      items: items.sort((a, b) => a.line - b.line),
     }));
   }
 }
@@ -134,6 +232,35 @@ export abstract class TlogTreeItem extends vscode.TreeItem {
   }
 }
 
+export class TlogDirectoryTreeItem extends TlogTreeItem {
+  constructor(
+    public readonly directoryName: string,
+    public readonly node: TlogDirectoryNode
+  ) {
+    const totalTlogs = TlogDirectoryTreeItem.getTotalTlogCount(node);
+    super(directoryName, vscode.TreeItemCollapsibleState.Collapsed);
+
+    this.tooltip = node.fullPath;
+    this.description = `(${totalTlogs})`;
+    this.contextValue = "tlogDirectory";
+    this.iconPath = vscode.ThemeIcon.Folder;
+  }
+
+  private static getTotalTlogCount(node: TlogDirectoryNode): number {
+    let count = 0;
+
+    // Count TLOGs in files in this directory
+    count += node.files.reduce((sum, file) => sum + file.items.length, 0);
+
+    // Count TLOGs in subdirectories
+    for (const [, childNode] of node.children) {
+      count += TlogDirectoryTreeItem.getTotalTlogCount(childNode);
+    }
+
+    return count;
+  }
+}
+
 export class TlogFileTreeItem extends TlogTreeItem {
   constructor(public readonly group: TlogFileGroup) {
     super(
@@ -143,8 +270,8 @@ export class TlogFileTreeItem extends TlogTreeItem {
 
     this.tooltip = group.filePath;
     this.description = `(${group.items.length})`;
-    this.contextValue = 'tlogFile';
-    this.iconPath = new vscode.ThemeIcon('file');
+    this.contextValue = "tlogFile";
+    this.iconPath = new vscode.ThemeIcon("file");
   }
 }
 
@@ -157,13 +284,13 @@ export class TlogItemTreeItem extends TlogTreeItem {
     );
 
     this.tooltip = item.content;
-    this.contextValue = 'tlogItem';
-    this.iconPath = new vscode.ThemeIcon('console');
-    
+    this.contextValue = "tlogItem";
+    this.iconPath = new vscode.ThemeIcon("console");
+
     this.command = {
-      command: 'tlog.openTlogLocation',
-      title: 'Open TLOG Location',
-      arguments: [item]
+      command: "tlog.openTlogLocation",
+      title: "Open TLOG Location",
+      arguments: [item],
     };
   }
 
@@ -172,12 +299,15 @@ export class TlogItemTreeItem extends TlogTreeItem {
     if (match && match[1]) {
       return match[1].trim();
     }
-    
+
     const simpleMatch = content.match(/\[TLOG\]/);
     if (simpleMatch) {
-      return content.substring(simpleMatch.index! + 6).trim().replace(/['"`\)\;]/g, '');
+      return content
+        .substring(simpleMatch.index! + 6)
+        .trim()
+        .replace(/['"`\)\;]/g, "");
     }
-    
-    return content.substring(0, 50) + (content.length > 50 ? '...' : '');
+
+    return content.substring(0, 50) + (content.length > 50 ? "..." : "");
   }
 }
