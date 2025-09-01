@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
-import { TlogItem } from "./tlog-tree-provider";
+import { TlogItem, TlogTreeDataProvider } from "./tlog-tree-provider";
 
 export const handleOpenTlogLocation = (item: TlogItem) => {
   openFileAtLocation(item.filePath, item.line, item.column);
 };
 
-export const handleRefreshTlogTree = (treeProvider: any) => {
+export const handleRefreshTlogTree = (treeProvider: TlogTreeDataProvider) => {
   treeProvider.refresh();
   vscode.window.showInformationMessage("TLOG Explorer refreshed");
 };

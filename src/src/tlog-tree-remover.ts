@@ -6,6 +6,7 @@ import {
   TlogDirectoryTreeItem,
   TlogFileTreeItem,
   TlogItemTreeItem,
+  TlogTreeDataProvider,
 } from "./tlog-tree-provider";
 
 const TLOG_PATTERN = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
@@ -14,7 +15,7 @@ const CONFIRMATION_NO = "No";
 
 export const handleRemoveFilesTlogs = async (
   fileItem: TlogFileTreeItem,
-  treeProvider: any
+  treeProvider: TlogTreeDataProvider
 ) => {
   const filePath = fileItem.group.filePath;
   const tlogCount = fileItem.group.items.length;
@@ -44,7 +45,7 @@ export const handleRemoveFilesTlogs = async (
 
 export const handleRemoveDirectoryTlogs = async (
   directoryItem: TlogDirectoryTreeItem,
-  treeProvider: any
+  treeProvider: TlogTreeDataProvider
 ) => {
   const totalTlogs = getTotalTlogCount(directoryItem.node);
 
@@ -82,7 +83,7 @@ export const handleRemoveDirectoryTlogs = async (
 
 export const handleRemoveSingleTlog = async (
   tlogItem: TlogItemTreeItem,
-  treeProvider: any
+  treeProvider: TlogTreeDataProvider
 ) => {
   const confirmed = await vscode.window.showWarningMessage(
     `Remove this TLOG from line ${tlogItem.item.line + 1}?`,
