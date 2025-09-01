@@ -10,15 +10,22 @@ export const handleRefreshTlogTree = (treeProvider: any) => {
   vscode.window.showInformationMessage("TLOG Explorer refreshed");
 };
 
-const openFileAtLocation = async (filePath: string, line: number, column: number) => {
+const openFileAtLocation = async (
+  filePath: string,
+  line: number,
+  column: number
+) => {
   try {
     const uri = vscode.Uri.file(filePath);
     const document = await vscode.workspace.openTextDocument(uri);
     const editor = await vscode.window.showTextDocument(document);
-    
+
     const position = new vscode.Position(line, column);
     editor.selection = new vscode.Selection(position, position);
-    editor.revealRange(new vscode.Range(position, position), vscode.TextEditorRevealType.InCenter);
+    editor.revealRange(
+      new vscode.Range(position, position),
+      vscode.TextEditorRevealType.InCenter
+    );
   } catch (error) {
     vscode.window.showErrorMessage(`Failed to open file: ${error}`);
   }
