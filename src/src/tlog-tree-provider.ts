@@ -6,24 +6,24 @@ import { rgPath } from "@vscode/ripgrep";
 const RIPGREP_SEARCH_PATTERN = "console.log.*[TLOG]";
 const NODE_MODULES_EXCLUDE_PATTERN = "!**/node_modules/**";
 
-export interface TlogItem {
+export type TlogItem = {
   filePath: string;
   line: number;
   column: number;
   content: string;
-}
+};
 
-export interface TlogFileGroup {
+export type TlogFileGroup = {
   filePath: string;
   items: TlogItem[];
-}
+};
 
-export interface TlogDirectoryNode {
+export type TlogDirectoryNode = {
   name: string;
   fullPath: string;
   children: Map<string, TlogDirectoryNode>;
   files: TlogFileGroup[];
-}
+};
 
 export class TlogTreeDataProvider
   implements vscode.TreeDataProvider<TlogTreeItem>
