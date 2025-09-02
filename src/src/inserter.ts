@@ -9,7 +9,7 @@ export const handleInsertTlog = () => {
     return;
   }
 
-  const position = editor.selection.active;
+  const location = editor.selection.active;
   const snippet = new vscode.SnippetString(TLOG_SNIPPET_TEMPLATE);
-  editor.insertSnippet(snippet, position);
+  editor.insertSnippet(snippet, location);
 };
