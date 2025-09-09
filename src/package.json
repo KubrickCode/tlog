@@ -115,7 +115,7 @@
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package --out versions/",
-    "install-package": "code --install-extension versions/tlog-vscode-0.1.11.vsix",
+    "install-package": "code --install-extension versions/tlog-vscode-$npm_package_version.vsix",
     "vsce-publish": "vsce publish",
     "ovsx-publish": "ovsx publish"
   },
