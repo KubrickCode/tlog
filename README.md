@@ -46,7 +46,7 @@ A powerful VS Code extension that helps you manage temporary logging statements 
 
 1. **Install the extension** from VS Code Marketplace or Open VSX Registry
 2. **Insert a TLOG**: Press `Ctrl+Shift+T` and type your debug message
-3. **View TLOGs**: Open the "TLOG Explorer" in the sidebar
+3. **View TLOGs**: Open the "TLOG" panel in the activity bar (sidebar)
 4. **Clean up**: Use `Ctrl+Shift+R` or click trash icons in the tree view
 
 ## Commands
