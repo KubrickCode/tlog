@@ -17,22 +17,26 @@ A powerful VS Code extension that helps you manage temporary logging statements 
 ## Features
 
 ### Quick TLOG Insertion
+
 - **Instant logging**: Press `Ctrl+Shift+T` (Mac: `Cmd+Shift+T`) to insert a `console.log('[TLOG] message');`
 - **Smart snippets**: Tab through the message placeholder for quick editing
 - **[TLOG] prefix**: Easy identification among other console logs
 
 ### Powerful Cleanup
+
 - **Bulk removal**: Press `Ctrl+Shift+R` (Mac: `Cmd+Shift+R`) to remove all TLOGs
 - **Scope selection**: Choose between current file or entire workspace
 - **Safety confirmation**: Prevents accidental deletions with confirmation dialogs
 
 ### Tree View Explorer
+
 - **Visual overview**: See all TLOGs organized by directory structure
 - **Hierarchical display**: Navigate through folders and files intuitively
 - **TLOG count indicators**: Each folder and file shows the number of TLOGs
 - **One-click navigation**: Jump directly to any TLOG location
 
 ### Granular Control
+
 - **Individual removal**: Remove single TLOGs directly from the tree view
 - **File-level cleanup**: Remove all TLOGs from a specific file
 - **Directory cleanup**: Remove all TLOGs from a folder and its subdirectories
@@ -47,11 +51,11 @@ A powerful VS Code extension that helps you manage temporary logging statements 
 
 ## Commands
 
-| Command | Shortcut | Description |
-|---------|----------|-------------|
-| Insert TLOG | `Ctrl+Shift+T` | Insert a new TLOG at cursor position |
-| Remove All TLOGs | `Ctrl+Shift+R` | Remove TLOGs from file or workspace |
-| Refresh TLOG Tree | - | Refresh the TLOG Explorer view |
+| Command           | Shortcut       | Description                          |
+| ----------------- | -------------- | ------------------------------------ |
+| Insert TLOG       | `Ctrl+Shift+T` | Insert a new TLOG at cursor position |
+| Remove All TLOGs  | `Ctrl+Shift+R` | Remove TLOGs from file or workspace  |
+| Refresh TLOG Tree | -              | Refresh the TLOG Explorer view       |
 
 ## Tree View Actions
 
@@ -63,6 +67,7 @@ A powerful VS Code extension that helps you manage temporary logging statements 
 ## Use Cases
 
 **Perfect for:**
+
 - **Debugging sessions**: Quick temporary logs that you can easily clean up
 - **Development workflow**: Add debug statements without cluttering your code permanently
 - **Code reviews**: Ensure no temporary logs make it into production
@@ -71,12 +76,15 @@ A powerful VS Code extension that helps you manage temporary logging statements 
 ## Screenshots
 
 ### Tree View Explorer
+
 The hierarchical tree view shows all your TLOGs organized by directory structure with inline removal actions.
 
 ### Quick Insertion
+
 Insert TLOGs instantly with keyboard shortcuts and smart snippets.
 
 ### Bulk Removal
+
 Choose scope and remove all TLOGs with confirmation dialogs.
 
 ## Technical Details
@@ -97,6 +105,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 If you encounter any issues or have feature requests:
+
 - **Bug reports**: [GitHub Issues](https://github.com/KubrickCode/tlog/issues)
 - **Feature requests**: [GitHub Discussions](https://github.com/KubrickCode/tlog/discussions)
 - **Rate the extension**: Help others discover TLOG by rating it on the marketplace
@@ -105,4 +114,4 @@ If you encounter any issues or have feature requests:
 
 **Made with ❤️ by KubrickCode**
 
-*Keep your logs organized, keep your code clean!*
+_Keep your logs organized, keep your code clean!_
