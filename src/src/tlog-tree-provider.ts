@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as cp from "child_process";
 import * as path from "path";
 import { rgPath } from "@vscode/ripgrep";
+import { TlogFileWatcher } from "./file-watcher";
 
 const RIPGREP_SEARCH_PATTERN = "console.log.*[TLOG]";
 const NODE_MODULES_EXCLUDE_PATTERN = "!**/node_modules/**";
@@ -37,9 +38,12 @@ export class TlogTreeDataProvider
 
   private rootNode: TlogDirectoryNode | null = null;
   private workspacePath: string = "";
+  private fileWatcher: TlogFileWatcher;
 
   constructor() {
+    this.fileWatcher = new TlogFileWatcher(() => this.refresh());
     this.refresh();
+    this.setupAutoRefresh();
   }
 
   refresh(): void {
@@ -47,6 +51,17 @@ export class TlogTreeDataProvider
       this.rootNode = this.buildDirectoryTree(groups);
       this._onDidChangeTreeData.fire();
     });
+  }
+
+  private setupAutoRefresh(): void {
+    const workspacePath = this.getWorkspacePath();
+    if (workspacePath) {
+      this.fileWatcher.start(workspacePath);
+    }
+  }
+
+  dispose(): void {
+    this.fileWatcher.dispose();
   }
 
   getTreeItem(element: TlogTreeItem): vscode.TreeItem {
