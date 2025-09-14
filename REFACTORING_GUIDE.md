@@ -214,19 +214,20 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 #### 1.2 Ripgrep Result Parsing Tests
 
-- [ ] `src/core/tlog-search.test.ts`
+- [ ] `src/core/tlog-search.test.ts` (in progress)
+
+  **Current: buildRipgrepCommand + parseRipgrepResults tests (4 test cases)**
 
   ```typescript
   describe("TLOG Search Functions", () => {
     describe("buildRipgrepCommand", () => {
-      test("builds correct ripgrep command for workspace path", () => {
-        const workspacePath = "/home/user/project";
-        const command = buildRipgrepCommand(workspacePath);
-        expect(command).toContain("console.log.*[TLOG]");
-        expect(command).toContain(workspacePath);
-        expect(command).toContain("!**/node_modules/**");
-        expect(command).toContain("--json");
-      });
+      test("builds correct ripgrep command for workspace path", () => { ... });
+      test("handles empty workspace path", () => { ... });
+    });
+
+    describe("parseRipgrepResults", () => {
+      test("parses valid JSON match result", () => { ... });
+      test("returns empty array for non-match JSON", () => { ... });
     });
   });
   ```
