@@ -198,6 +198,13 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
       test("does not match with incomplete TLOG tag", () => { ... });
       test("matches with complex message content", () => { ... });
     });
+
+    describe("TLOG_SNIPPET_TEMPLATE", () => {
+      // 3개 테스트 케이스: 템플릿 구조 검증
+      test("contains correct TLOG prefix", () => { ... });
+      test("contains placeholder syntax", () => { ... });
+      test("is valid template format", () => { ... });
+    });
   });
   ```
 

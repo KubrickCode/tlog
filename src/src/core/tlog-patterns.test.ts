@@ -41,4 +41,21 @@ describe("TLOG Pattern Matching", () => {
       ).toBe(true);
     });
   });
+
+  describe("TLOG_SNIPPET_TEMPLATE", () => {
+    test("contains correct TLOG prefix", () => {
+      expect(TLOG_SNIPPET_TEMPLATE).toContain("[TLOG]");
+    });
+
+    test("contains placeholder syntax", () => {
+      expect(TLOG_SNIPPET_TEMPLATE).toContain("${1:message}");
+      expect(TLOG_SNIPPET_TEMPLATE).toContain("${0}");
+    });
+
+    test("is valid template format", () => {
+      expect(TLOG_SNIPPET_TEMPLATE).toBe(
+        "console.log('[TLOG] ${1:message}');${0}"
+      );
+    });
+  });
 });
