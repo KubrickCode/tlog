@@ -292,7 +292,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 ### 🧪 Minimal Test Environment Setup
 
-- [ ] Add Jest to `package.json`
+- [x] Add Jest to `package.json` ✅ COMPLETED
 
   ```json
   {
@@ -308,7 +308,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   }
   ```
 
-- [ ] Basic `jest.config.js` setup
+- [x] Basic `jest.config.js` setup ✅ COMPLETED
 
   ```javascript
   module.exports = {
@@ -316,11 +316,19 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
     testEnvironment: "node",
     testMatch: ["**/__tests__/**/*.test.ts"],
     collectCoverageFrom: [
-      "src/core/**/*.ts", // Only measure coverage for pure functions
+      "src/**/*.ts", // Only measure coverage for source files
       "!src/**/*.test.ts",
+      "!src/main.ts", // Exclude entry point
     ],
+    moduleNameMapping: {
+      "^vscode$": "<rootDir>/__mocks__/vscode.js",
+    },
   };
   ```
+
+- [x] VSCode API Mock Setup ✅ COMPLETED
+
+  Created `/src/__mocks__/vscode.js` with essential VSCode API mocks for testing pure functions without VSCode dependencies.
 
 ## ✅ Completed Refactoring (Progress Update)
 
@@ -410,6 +418,34 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 - 🚀 Maintained 100% existing tree view functionality
 - 📝 Centralized tree data structures and algorithms
 
+### 🎯 Jest Test Environment Setup - COMPLETED
+
+**Added Dependencies**:
+
+- `jest`: ^29.0.0 - Test runner framework
+- `@types/jest`: ^29.0.0 - TypeScript types for Jest
+- `ts-jest`: ^29.0.0 - TypeScript preprocessor for Jest
+
+**Created Files**:
+
+- ✅ `/src/jest.config.js` - Jest configuration with TypeScript support
+- ✅ `/src/__mocks__/vscode.js` - VSCode API mocks for isolated testing
+- ✅ Updated `/src/package.json` - Added test scripts and dependencies
+
+**Configuration Features**:
+
+- TypeScript test file support (`**/__tests__/**/*.test.ts`)
+- VSCode API mocking to test pure functions independently
+- Coverage collection from source files (excluding tests and entry point)
+- Node.js test environment for pure function testing
+
+**Benefits Achieved**:
+
+- 🧪 Ready for unit testing of pure business logic functions
+- 🚫 VSCode API dependencies properly mocked for isolated testing
+- 🔧 Test scripts integrated into build process (`npm test`, `npm run test:watch`)
+- 📝 Foundation laid for comprehensive test coverage of core functionality
+
 ---
 
 ## 🚀 Actual Work Order (Realistic Plan)
@@ -420,7 +456,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [ ] Create `src/core/tlog-patterns.ts` → consolidate constants
 - [x] Create `src/core/tlog-search.ts` → consolidate ripgrep logic ✅ COMPLETED
-- [ ] Set up test environment (Jest)
+- [x] Set up test environment (Jest) ✅ COMPLETED
 
 **Day 2**: Pure function separation
 
