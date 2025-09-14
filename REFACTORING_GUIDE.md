@@ -92,11 +92,11 @@ src/src/
 
 ### Priority 2️⃣: Split Large Functions (make testable)
 
-#### 2.1 Split `removeFromWorkspace()` in `remover.ts` ✨ High priority
+#### 2.1 Split `removeFromWorkspace()` in `remover.ts` ✨ High priority ✅ COMPLETED
 
 **Problem**: Search + parsing + UI + file modification all in one function
 
-- [ ] Separate into pure functions (keep VSCode API as-is)
+- [x] Separate into pure functions (keep VSCode API as-is)
 
   ```typescript
   // Testable pure function
@@ -330,6 +330,26 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 - 🧪 Centralized all TLOG-related patterns and constants
 - 🔧 Single source of truth for pattern modifications
 
+### 🎯 Priority 2.1: Split removeFromWorkspace() Function - COMPLETED
+
+**Created**: Pure functions in `/src/remover.ts`
+
+**Implemented Functions**:
+
+- `processSearchResults(searchResults: string[]): Array<{filePath: string, lineNumber: number}>` - Pure search result parsing function
+- `createFileLineMap(processedResults: Array<{filePath: string, lineNumber: number}>): Map<string, number[]>` - Pure file-line mapping function
+
+**Updated Files**:
+
+- ✅ `remover.ts`: Extracted pure business logic functions while keeping VSCode API calls intact
+
+**Benefits Achieved**:
+
+- 🧪 Created testable pure functions for search result processing
+- 🔧 Separated business logic from VSCode API dependencies
+- 🚀 Maintained 100% existing functionality
+- 📝 Added clear separation between pure functions and UI logic
+
 ---
 
 ## 🚀 Actual Work Order (Realistic Plan)
@@ -344,7 +364,8 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 **Day 2**: Pure function separation
 
-- [ ] Extract `processSearchResults()` function from `remover.ts`
+- [x] Extract `processSearchResults()` function from `remover.ts` ✅ COMPLETED
+- [x] Extract `createFileLineMap()` function from `remover.ts` ✅ COMPLETED
 - [ ] Extract `groupTlogsByFile()` function from `tlog-tree-provider.ts`
 - [ ] Write tests for pure functions
 

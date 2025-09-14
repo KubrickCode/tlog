@@ -186,10 +186,12 @@ const deleteLinesFromSearchResults = async (
   return await vscode.workspace.applyEdit(edit);
 };
 
-const parseSearchResults = (results: string[]): Map<string, number[]> => {
-  const fileLineMap = new Map<string, number[]>();
+export const processSearchResults = (
+  searchResults: string[]
+): Array<{ filePath: string; lineNumber: number }> => {
+  const processedResults: Array<{ filePath: string; lineNumber: number }> = [];
 
-  results.forEach((line) => {
+  searchResults.forEach((line) => {
     const parts = line.split(":");
     if (parts.length < 2) return;
 
@@ -200,18 +202,34 @@ const parseSearchResults = (results: string[]): Map<string, number[]> => {
     if (isNaN(lineNumber)) return;
 
     const zeroBasedLineNumber = lineNumber - RIPGREP_LINE_INDEX_OFFSET;
+    processedResults.push({ filePath, lineNumber: zeroBasedLineNumber });
+  });
 
+  return processedResults;
+};
+
+export const createFileLineMap = (
+  processedResults: Array<{ filePath: string; lineNumber: number }>
+): Map<string, number[]> => {
+  const fileLineMap = new Map<string, number[]>();
+
+  processedResults.forEach(({ filePath, lineNumber }) => {
     if (!fileLineMap.has(filePath)) {
       fileLineMap.set(filePath, []);
     }
 
     const existingLines = fileLineMap.get(filePath);
     if (existingLines) {
-      existingLines.push(zeroBasedLineNumber);
+      existingLines.push(lineNumber);
     }
   });
 
   return fileLineMap;
+};
+
+const parseSearchResults = (results: string[]): Map<string, number[]> => {
+  const processedResults = processSearchResults(results);
+  return createFileLineMap(processedResults);
 };
 
 const showNoTlogsFound = (scope: string) => {
