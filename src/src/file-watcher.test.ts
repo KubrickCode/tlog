@@ -49,13 +49,18 @@ describe("File Watcher Functions", () => {
       expect(shouldProcessFile("C:/project/.git/config")).toBe(false);
     });
 
-    test("handles case sensitivity in directory names", () => {
+    test("handles case insensitivity in directory names", () => {
       expect(shouldProcessFile("/project/Node_Modules/package/index.js")).toBe(
-        true
+        false
       );
-      expect(shouldProcessFile("/project/.GIT/config")).toBe(true);
-      expect(shouldProcessFile("/project/.vscode-test/config.json")).toBe(true);
+      expect(shouldProcessFile("/project/NODE_MODULES/package/index.js")).toBe(
+        false
+      );
+      expect(shouldProcessFile("/project/.GIT/config")).toBe(false);
+      expect(shouldProcessFile("/project/.Git/config")).toBe(false);
+      expect(shouldProcessFile("/project/DIST/bundle.js")).toBe(false);
       expect(shouldProcessFile("/project/.vscode/Settings.json")).toBe(false);
+      expect(shouldProcessFile("/project/.VSCODE/settings.json")).toBe(false);
     });
 
     test("handles root directory and single-level paths", () => {

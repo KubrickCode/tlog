@@ -94,7 +94,7 @@ export const shouldProcessFile = (filePath: string): boolean => {
 
   return !excludePatterns.some(
     (pattern) =>
-      filePath.includes(path.sep + pattern + path.sep) ||
-      filePath.endsWith(path.sep + pattern)
+      filePath.toLowerCase().includes(path.sep + pattern + path.sep) ||
+      filePath.toLowerCase().endsWith(path.sep + pattern)
   );
 };
