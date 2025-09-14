@@ -1,30 +1,15 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
 import * as path from "path";
-import { rgPath } from "@vscode/ripgrep";
+import { buildRipgrepCommand, parseRipgrepResults } from "./core/tlog-search";
+import {
+  buildDirectoryTree,
+  groupTlogsByFile,
+  TlogDirectoryNode,
+  TlogFileGroup,
+  TlogItem,
+} from "./core/tree-builder";
 import { TlogFileWatcher } from "./file-watcher";
-
-const RIPGREP_SEARCH_PATTERN = "console.log.*[TLOG]";
-const NODE_MODULES_EXCLUDE_PATTERN = "!**/node_modules/**";
-
-export type TlogItem = {
-  filePath: string;
-  line: number;
-  column: number;
-  content: string;
-};
-
-export type TlogFileGroup = {
-  filePath: string;
-  items: TlogItem[];
-};
-
-export type TlogDirectoryNode = {
-  name: string;
-  fullPath: string;
-  children: Map<string, TlogDirectoryNode>;
-  files: TlogFileGroup[];
-};
 
 export class TlogTreeDataProvider
   implements vscode.TreeDataProvider<TlogTreeItem>
@@ -48,7 +33,7 @@ export class TlogTreeDataProvider
 
   refresh(): void {
     this.scanTlogs().then((groups) => {
-      this.rootNode = this.buildDirectoryTree(groups);
+      this.rootNode = buildDirectoryTree(groups, this.workspacePath);
       this._onDidChangeTreeData.fire();
     });
   }
@@ -128,40 +113,6 @@ export class TlogTreeDataProvider
     });
   }
 
-  private buildDirectoryTree(groups: TlogFileGroup[]): TlogDirectoryNode {
-    const root: TlogDirectoryNode = {
-      name: "",
-      fullPath: this.workspacePath,
-      children: new Map(),
-      files: [],
-    };
-
-    groups.forEach((group) => {
-      const relativePath = path.relative(this.workspacePath, group.filePath);
-      const pathParts = relativePath.split(path.sep);
-
-      let currentNode = root;
-      let currentPath = this.workspacePath;
-
-      pathParts.forEach((part) => {
-        currentPath = path.join(currentPath, part);
-        if (!currentNode.children.has(part)) {
-          currentNode.children.set(part, {
-            name: part,
-            fullPath: currentPath,
-            children: new Map(),
-            files: [],
-          });
-        }
-        currentNode = currentNode.children.get(part)!;
-      });
-
-      currentNode.files.push(group);
-    });
-
-    return root;
-  }
-
   private async scanTlogs(): Promise<TlogFileGroup[]> {
     const workspacePath = this.getWorkspacePath();
     if (!workspacePath) return [];
@@ -170,7 +121,7 @@ export class TlogTreeDataProvider
 
     try {
       const searchResults = await this.searchTlogsWithRipgrep(workspacePath);
-      return this.groupTlogsByFile(searchResults);
+      return groupTlogsByFile(searchResults, parseRipgrepResults);
     } catch (error) {
       console.error("Failed to scan TLOGs:", error);
       return [];
@@ -187,7 +138,7 @@ export class TlogTreeDataProvider
 
   private searchTlogsWithRipgrep(workspacePath: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      const command = `"${rgPath}" --vimgrep "${RIPGREP_SEARCH_PATTERN}" "${workspacePath}" -g "${NODE_MODULES_EXCLUDE_PATTERN}"`;
+      const command = buildRipgrepCommand(workspacePath);
 
       cp.exec(command, (error, stdout, stderr) => {
         if (error && !stdout) {
@@ -202,39 +153,6 @@ export class TlogTreeDataProvider
         resolve(results);
       });
     });
-  }
-
-  private groupTlogsByFile(searchResults: string[]): TlogFileGroup[] {
-    const groups = new Map<string, TlogItem[]>();
-
-    searchResults.forEach((line) => {
-      const parts = line.split(":");
-      if (parts.length < 4) return;
-
-      const filePath = parts[0];
-      const lineNumber = parseInt(parts[1], 10);
-      const columnNumber = parseInt(parts[2], 10);
-      const content = parts.slice(3).join(":").trim();
-
-      if (isNaN(lineNumber) || isNaN(columnNumber)) return;
-
-      const tlogItem: TlogItem = {
-        filePath,
-        line: lineNumber - 1, // Convert to 0-based
-        column: columnNumber - 1, // Convert to 0-based
-        content,
-      };
-
-      if (!groups.has(filePath)) {
-        groups.set(filePath, []);
-      }
-      groups.get(filePath)!.push(tlogItem);
-    });
-
-    return Array.from(groups.entries()).map(([filePath, items]) => ({
-      filePath,
-      items: items.sort((a, b) => a.line - b.line),
-    }));
   }
 }
 

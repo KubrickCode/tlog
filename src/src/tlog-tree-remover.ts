@@ -1,17 +1,16 @@
 import * as vscode from "vscode";
+import { TlogItem, TlogDirectoryNode } from "./core/tree-builder";
 import {
-  TlogItem,
-  TlogFileGroup,
-  TlogDirectoryNode,
   TlogDirectoryTreeItem,
   TlogFileTreeItem,
   TlogItemTreeItem,
   TlogTreeDataProvider,
 } from "./tlog-tree-provider";
-
-const TLOG_PATTERN = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
-const CONFIRMATION_YES = "Yes";
-const CONFIRMATION_NO = "No";
+import {
+  TLOG_PATTERN,
+  CONFIRMATION_YES,
+  CONFIRMATION_NO,
+} from "./core/tlog-patterns";
 
 export const handleRemoveFilesTlogs = async (
   fileItem: TlogFileTreeItem,

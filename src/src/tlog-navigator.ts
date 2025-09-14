@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
-import { TlogItem, TlogTreeDataProvider } from "./tlog-tree-provider";
+import { TlogItem } from "./core/tree-builder";
+import { TlogTreeDataProvider } from "./tlog-tree-provider";
 
 export const handleOpenTlogLocation = (item: TlogItem) => {
   openFileAtLocation(item.filePath, item.line, item.column);

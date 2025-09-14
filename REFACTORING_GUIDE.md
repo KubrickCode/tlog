@@ -46,11 +46,11 @@ src/src/
 
 ### Priority 1️⃣: Remove Duplicate Code (ensure test stability)
 
-#### 1.1 Unify TLOG Search Logic ✨ Start immediately
+#### 1.1 Unify TLOG Search Logic ✅ COMPLETED
 
 **Problem**: Duplicate ripgrep execution code in `remover.ts` and `tlog-tree-provider.ts`
 
-- [ ] Create `src/core/tlog-search.ts` (simple functions only)
+- [x] Create `src/core/tlog-search.ts` (simple functions only)
 
   ```typescript
   // Pure functions only - easy to test
@@ -76,25 +76,27 @@ src/src/
   };
   ```
 
-#### 1.2 Unify TLOG Pattern Matching ✨ Start immediately
+#### 1.2 Unify TLOG Pattern Matching ✅ COMPLETED
 
 **Problem**: Same regex pattern duplicated across multiple files
 
-- [ ] Consolidate identical constants from each file → merge into one
+- [x] Consolidate identical constants from each file → merge into one
 
   ```typescript
   // src/core/tlog-patterns.ts
   export const TLOG_PATTERN = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
   export const TLOG_SNIPPET_TEMPLATE = `console.log('[TLOG] \${1:message}');\${0}`;
+  export const CONFIRMATION_YES = "Yes";
+  export const CONFIRMATION_NO = "No";
   ```
 
 ### Priority 2️⃣: Split Large Functions (make testable)
 
-#### 2.1 Split `removeFromWorkspace()` in `remover.ts` ✨ High priority
+#### 2.1 Split `removeFromWorkspace()` in `remover.ts` ✨ High priority ✅ COMPLETED
 
 **Problem**: Search + parsing + UI + file modification all in one function
 
-- [ ] Separate into pure functions (keep VSCode API as-is)
+- [x] Separate into pure functions (keep VSCode API as-is)
 
   ```typescript
   // Testable pure function
@@ -115,19 +117,25 @@ src/src/
   };
   ```
 
-#### 2.2 Split `scanTlogs()` in `tlog-tree-provider.ts` ✨ High priority
+#### 2.2 Split `scanTlogs()` in `tlog-tree-provider.ts` ✨ High priority ✅ COMPLETED
 
 **Problem**: Same issue - too many responsibilities in one function
 
-- [ ] Separate into pure functions
+- [x] Separate into pure functions
 
   ```typescript
-  // Pure functions
-  export const groupTlogsByFile = (searchResults: string[]) => {
+  // Pure functions extracted to src/core/tree-builder.ts
+  export const groupTlogsByFile = (
+    searchResults: string[],
+    parseRipgrepResults: (content: string) => any[]
+  ): TlogFileGroup[] => {
     // Only grouping logic - easy to test
   };
 
-  export const buildDirectoryTree = (groups: TlogFileGroup[]) => {
+  export const buildDirectoryTree = (
+    groups: TlogFileGroup[],
+    workspacePath: string
+  ): TlogDirectoryNode => {
     // Only tree structure creation logic - easy to test
   };
   ```
@@ -223,8 +231,40 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
         { filePath: "/root/src/file1.ts", items: [] },
         { filePath: "/root/src/utils/file2.ts", items: [] },
       ];
-      const tree = buildDirectoryTree(groups);
+      const tree = buildDirectoryTree(groups, "/root");
       expect(tree.children.has("src")).toBe(true);
+    });
+
+    test("Group TLOGs by file correctly", () => {
+      const searchResults = [
+        '/path/file1.ts:10:5:console.log("[TLOG] test1");',
+        '/path/file1.ts:20:5:console.log("[TLOG] test2");',
+        '/path/file2.ts:15:3:console.log("[TLOG] test3");',
+      ];
+      const mockParseFunction = (content: string) => [
+        {
+          filePath: "/path/file1.ts",
+          line: 9,
+          column: 4,
+          content: 'console.log("[TLOG] test1");',
+        },
+        {
+          filePath: "/path/file1.ts",
+          line: 19,
+          column: 4,
+          content: 'console.log("[TLOG] test2");',
+        },
+        {
+          filePath: "/path/file2.ts",
+          line: 14,
+          column: 2,
+          content: 'console.log("[TLOG] test3");',
+        },
+      ];
+      const groups = groupTlogsByFile(searchResults, mockParseFunction);
+      expect(groups).toHaveLength(2);
+      expect(groups[0].items).toHaveLength(2);
+      expect(groups[1].items).toHaveLength(1);
     });
   });
   ```
@@ -282,6 +322,96 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   };
   ```
 
+## ✅ Completed Refactoring (Progress Update)
+
+### 🎯 Priority 1.1: TLOG Search Logic Unification - COMPLETED
+
+**Created**: `/src/core/tlog-search.ts`
+
+**Implemented Functions**:
+
+- `buildRipgrepCommand(workspacePath: string): string` - Pure command building function
+- `parseRipgrepResults(stdout: string): ParsedRipgrepResult[]` - Pure parsing function
+- `ParsedRipgrepResult` type definition
+
+**Updated Files**:
+
+- ✅ `remover.ts`: Removed duplicate constants, now uses `buildRipgrepCommand()`
+- ✅ `tlog-tree-provider.ts`: Removed duplicate constants, now uses both functions
+
+**Benefits Achieved**:
+
+- 🚫 Eliminated duplicate RIPGREP_SEARCH_PATTERN and NODE_MODULES_EXCLUDE_PATTERN
+- 🧪 Created pure functions ready for unit testing
+- 🔧 Centralized ripgrep logic maintenance
+
+### 🎯 Priority 1.2: TLOG Pattern Matching Unification - COMPLETED
+
+**Created**: `/src/core/tlog-patterns.ts`
+
+**Implemented Constants**:
+
+- `TLOG_PATTERN` - Unified regex pattern for TLOG detection
+- `TLOG_SNIPPET_TEMPLATE` - Template for TLOG insertion
+- `CONFIRMATION_YES`, `CONFIRMATION_NO` - UI confirmation constants
+
+**Updated Files**:
+
+- ✅ `remover.ts`: Removed duplicate constants, now imports from patterns file
+- ✅ `tlog-tree-remover.ts`: Removed duplicate constants, now imports from patterns file
+- ✅ `inserter.ts`: Moved template constant to centralized location
+
+**Benefits Achieved**:
+
+- 🚫 Eliminated duplicate TLOG_PATTERN across multiple files
+- 🚫 Eliminated duplicate UI confirmation constants
+- 🧪 Centralized all TLOG-related patterns and constants
+- 🔧 Single source of truth for pattern modifications
+
+### 🎯 Priority 2.1: Split removeFromWorkspace() Function - COMPLETED
+
+**Created**: Pure functions in `/src/remover.ts`
+
+**Implemented Functions**:
+
+- `processSearchResults(searchResults: string[]): Array<{filePath: string, lineNumber: number}>` - Pure search result parsing function
+- `createFileLineMap(processedResults: Array<{filePath: string, lineNumber: number}>): Map<string, number[]>` - Pure file-line mapping function
+
+**Updated Files**:
+
+- ✅ `remover.ts`: Extracted pure business logic functions while keeping VSCode API calls intact
+
+**Benefits Achieved**:
+
+- 🧪 Created testable pure functions for search result processing
+- 🔧 Separated business logic from VSCode API dependencies
+- 🚀 Maintained 100% existing functionality
+- 📝 Added clear separation between pure functions and UI logic
+
+### 🎯 Priority 2.2: Split scanTlogs() Function - COMPLETED
+
+**Created**: `/src/core/tree-builder.ts`
+
+**Implemented Functions**:
+
+- `groupTlogsByFile(searchResults: string[], parseRipgrepResults: (content: string) => any[]): TlogFileGroup[]` - Pure grouping function
+- `buildDirectoryTree(groups: TlogFileGroup[], workspacePath: string): TlogDirectoryNode` - Pure tree building function
+- Type definitions: `TlogItem`, `TlogFileGroup`, `TlogDirectoryNode`
+
+**Updated Files**:
+
+- ✅ `tlog-tree-provider.ts`: Removed duplicate functions, now imports and uses pure functions from tree-builder
+
+**Benefits Achieved**:
+
+- 🧪 Created testable pure functions for tree data processing
+- 🚫 Eliminated duplicate type definitions
+- 🔧 Separated tree building logic from VSCode API dependencies
+- 🚀 Maintained 100% existing tree view functionality
+- 📝 Centralized tree data structures and algorithms
+
+---
+
 ## 🚀 Actual Work Order (Realistic Plan)
 
 ### 📅 Week 1: Foundation Work (2-3 days)
@@ -289,13 +419,15 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 **Day 1**: Start with duplicate removal
 
 - [ ] Create `src/core/tlog-patterns.ts` → consolidate constants
-- [ ] Create `src/core/tlog-search.ts` → consolidate ripgrep logic
+- [x] Create `src/core/tlog-search.ts` → consolidate ripgrep logic ✅ COMPLETED
 - [ ] Set up test environment (Jest)
 
 **Day 2**: Pure function separation
 
-- [ ] Extract `processSearchResults()` function from `remover.ts`
-- [ ] Extract `groupTlogsByFile()` function from `tlog-tree-provider.ts`
+- [x] Extract `processSearchResults()` function from `remover.ts` ✅ COMPLETED
+- [x] Extract `createFileLineMap()` function from `remover.ts` ✅ COMPLETED
+- [x] Extract `groupTlogsByFile()` function from `tlog-tree-provider.ts` ✅ COMPLETED
+- [x] Extract `buildDirectoryTree()` function from `tlog-tree-provider.ts` ✅ COMPLETED
 - [ ] Write tests for pure functions
 
 ### 📅 Week 2: Cleanup remaining issues (if needed)

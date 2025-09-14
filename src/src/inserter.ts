@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
-
-const TLOG_SNIPPET_TEMPLATE = `console.log('[TLOG] \${1:message}');\${0}`;
+import { TLOG_SNIPPET_TEMPLATE } from "./core/tlog-patterns";
 
 export const handleInsertTlog = () => {
   const editor = vscode.window.activeTextEditor;
