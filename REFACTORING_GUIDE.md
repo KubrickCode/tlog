@@ -76,16 +76,18 @@ src/src/
   };
   ```
 
-#### 1.2 Unify TLOG Pattern Matching ✨ Start immediately
+#### 1.2 Unify TLOG Pattern Matching ✅ COMPLETED
 
 **Problem**: Same regex pattern duplicated across multiple files
 
-- [ ] Consolidate identical constants from each file → merge into one
+- [x] Consolidate identical constants from each file → merge into one
 
   ```typescript
   // src/core/tlog-patterns.ts
   export const TLOG_PATTERN = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
   export const TLOG_SNIPPET_TEMPLATE = `console.log('[TLOG] \${1:message}');\${0}`;
+  export const CONFIRMATION_YES = "Yes";
+  export const CONFIRMATION_NO = "No";
   ```
 
 ### Priority 2️⃣: Split Large Functions (make testable)
@@ -304,6 +306,29 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 - 🚫 Eliminated duplicate RIPGREP_SEARCH_PATTERN and NODE_MODULES_EXCLUDE_PATTERN
 - 🧪 Created pure functions ready for unit testing
 - 🔧 Centralized ripgrep logic maintenance
+
+### 🎯 Priority 1.2: TLOG Pattern Matching Unification - COMPLETED
+
+**Created**: `/src/core/tlog-patterns.ts`
+
+**Implemented Constants**:
+
+- `TLOG_PATTERN` - Unified regex pattern for TLOG detection
+- `TLOG_SNIPPET_TEMPLATE` - Template for TLOG insertion
+- `CONFIRMATION_YES`, `CONFIRMATION_NO` - UI confirmation constants
+
+**Updated Files**:
+
+- ✅ `remover.ts`: Removed duplicate constants, now imports from patterns file
+- ✅ `tlog-tree-remover.ts`: Removed duplicate constants, now imports from patterns file
+- ✅ `inserter.ts`: Moved template constant to centralized location
+
+**Benefits Achieved**:
+
+- 🚫 Eliminated duplicate TLOG_PATTERN across multiple files
+- 🚫 Eliminated duplicate UI confirmation constants
+- 🧪 Centralized all TLOG-related patterns and constants
+- 🔧 Single source of truth for pattern modifications
 
 ---
 

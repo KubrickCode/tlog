@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
 import { buildRipgrepCommand, parseRipgrepResults } from "./core/tlog-search";
-
-const TLOG_PATTERN = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
-const CONFIRMATION_YES = "Yes";
-const CONFIRMATION_NO = "No";
+import {
+  TLOG_PATTERN,
+  CONFIRMATION_YES,
+  CONFIRMATION_NO,
+} from "./core/tlog-patterns";
 const RIPGREP_LINE_INDEX_OFFSET = 1;
 
 type RemovalScope = "current" | "workspace";
