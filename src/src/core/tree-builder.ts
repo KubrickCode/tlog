@@ -1,4 +1,5 @@
 import * as path from "path";
+import { ParsedRipgrepResult } from "./tlog-search";
 
 export type TlogItem = {
   filePath: string;
@@ -21,7 +22,7 @@ export type TlogDirectoryNode = {
 
 export const groupTlogsByFile = (
   searchResults: string[],
-  parseRipgrepResults: (content: string) => any[]
+  parseRipgrepResults: (content: string) => ParsedRipgrepResult[]
 ): TlogFileGroup[] => {
   const groups = new Map<string, TlogItem[]>();
   const parsedResults = parseRipgrepResults(searchResults.join("\n"));
@@ -61,10 +62,12 @@ export const buildDirectoryTree = (
     const relativePath = path.relative(workspacePath, group.filePath);
     const pathParts = relativePath.split(path.sep);
 
+    const directoryParts = pathParts.slice(0, -1);
+
     let currentNode = root;
     let currentPath = workspacePath;
 
-    pathParts.forEach((part) => {
+    directoryParts.forEach((part) => {
       currentPath = path.join(currentPath, part);
       if (!currentNode.children.has(part)) {
         currentNode.children.set(part, {
