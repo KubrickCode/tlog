@@ -1,4 +1,9 @@
-import { TLOG_PATTERN, TLOG_SNIPPET_TEMPLATE } from "./tlog-patterns";
+import {
+  TLOG_PATTERN,
+  TLOG_SNIPPET_TEMPLATE,
+  CONFIRMATION_YES,
+  CONFIRMATION_NO,
+} from "./tlog-patterns";
 
 describe("TLOG Pattern Matching", () => {
   describe("TLOG_PATTERN regex", () => {
@@ -56,6 +61,16 @@ describe("TLOG Pattern Matching", () => {
       expect(TLOG_SNIPPET_TEMPLATE).toBe(
         "console.log('[TLOG] ${1:message}');${0}"
       );
+    });
+  });
+
+  describe("Confirmation constants", () => {
+    test("CONFIRMATION_YES has correct value", () => {
+      expect(CONFIRMATION_YES).toBe("Yes");
+    });
+
+    test("CONFIRMATION_NO has correct value", () => {
+      expect(CONFIRMATION_NO).toBe("No");
     });
   });
 });

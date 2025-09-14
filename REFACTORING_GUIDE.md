@@ -200,10 +200,14 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
     });
 
     describe("TLOG_SNIPPET_TEMPLATE", () => {
-      // 3개 테스트 케이스: 템플릿 구조 검증
       test("contains correct TLOG prefix", () => { ... });
       test("contains placeholder syntax", () => { ... });
       test("is valid template format", () => { ... });
+    });
+
+    describe("Confirmation constants", () => {
+      test("CONFIRMATION_YES has correct value", () => { ... });
+      test("CONFIRMATION_NO has correct value", () => { ... });
     });
   });
   ```
