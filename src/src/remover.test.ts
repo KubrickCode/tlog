@@ -6,11 +6,11 @@ import {
 
 describe("Remover Functions", () => {
   describe("processSearchResults", () => {
-    test("processes ripgrep results correctly", () => {
+    test("processes ripgrep JSON results correctly", () => {
       const searchResults = [
-        '/path/to/file1.ts:10:5:console.log("[TLOG] test1");',
-        '/path/to/file2.ts:20:3:console.log("[TLOG] test2");',
-        '/path/to/file1.ts:30:8:console.log("[TLOG] test3");',
+        '{"type":"match","data":{"path":{"text":"/path/to/file1.ts"},"lines":{"text":"console.log(\\"[TLOG] test1\\");"},"line_number":10,"submatches":[{"start":5}]}}',
+        '{"type":"match","data":{"path":{"text":"/path/to/file2.ts"},"lines":{"text":"console.log(\\"[TLOG] test2\\");"},"line_number":20,"submatches":[{"start":3}]}}',
+        '{"type":"match","data":{"path":{"text":"/path/to/file1.ts"},"lines":{"text":"console.log(\\"[TLOG] test3\\");"},"line_number":30,"submatches":[{"start":8}]}}',
       ];
 
       const result = processSearchResults(searchResults);
@@ -30,12 +30,12 @@ describe("Remover Functions", () => {
       });
     });
 
-    test("ignores malformed lines", () => {
+    test("ignores malformed JSON lines", () => {
       const searchResults = [
-        '/path/to/file1.ts:10:5:console.log("[TLOG] test");',
-        "malformed-line-without-colon",
-        '/path/to/file2.ts:not-a-number:3:console.log("[TLOG] test");',
-        '/path/to/file3.ts:15:2:console.log("[TLOG] test");',
+        '{"type":"match","data":{"path":{"text":"/path/to/file1.ts"},"lines":{"text":"console.log(\\"[TLOG] test\\");"},"line_number":10,"submatches":[{"start":5}]}}',
+        "malformed-json-line",
+        '{"type":"begin"}',
+        '{"type":"match","data":{"path":{"text":"/path/to/file3.ts"},"lines":{"text":"console.log(\\"[TLOG] test\\");"},"line_number":15,"submatches":[{"start":2}]}}',
       ];
 
       const result = processSearchResults(searchResults);
@@ -45,14 +45,17 @@ describe("Remover Functions", () => {
       expect(result[1].filePath).toBe("/path/to/file3.ts");
     });
 
-    test("ignores lines with extra colons in path", () => {
+    test("ignores non-match JSON types", () => {
       const searchResults = [
-        '/path/with:colons/file.ts:10:5:console.log("[TLOG] test");',
+        '{"type":"begin"}',
+        '{"type":"match","data":{"path":{"text":"/path/to/file1.ts"},"lines":{"text":"console.log(\\"[TLOG] test\\");"},"line_number":10,"submatches":[{"start":5}]}}',
+        '{"type":"end"}',
       ];
 
       const result = processSearchResults(searchResults);
 
-      expect(result).toHaveLength(0);
+      expect(result).toHaveLength(1);
+      expect(result[0].filePath).toBe("/path/to/file1.ts");
     });
   });
 

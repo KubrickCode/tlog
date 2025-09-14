@@ -6,7 +6,6 @@ import {
   CONFIRMATION_YES,
   CONFIRMATION_NO,
 } from "./core/tlog-patterns";
-const RIPGREP_LINE_INDEX_OFFSET = 1;
 
 type RemovalScope = "current" | "workspace";
 
@@ -189,23 +188,13 @@ const deleteLinesFromSearchResults = async (
 export const processSearchResults = (
   searchResults: string[]
 ): Array<{ filePath: string; lineNumber: number }> => {
-  const processedResults: Array<{ filePath: string; lineNumber: number }> = [];
-
-  searchResults.forEach((line) => {
-    const parts = line.split(":");
-    if (parts.length < 2) return;
-
-    const filePath = parts[0];
-    const lineNumberStr = parts[1];
-    const lineNumber = parseInt(lineNumberStr, 10);
-
-    if (isNaN(lineNumber)) return;
-
-    const zeroBasedLineNumber = lineNumber - RIPGREP_LINE_INDEX_OFFSET;
-    processedResults.push({ filePath, lineNumber: zeroBasedLineNumber });
-  });
-
-  return processedResults;
+  const stdout = searchResults.join('\n');
+  const parsedResults = parseRipgrepResults(stdout);
+  
+  return parsedResults.map(result => ({
+    filePath: result.filePath,
+    lineNumber: result.line
+  }));
 };
 
 export const createFileLineMap = (
@@ -228,7 +217,12 @@ export const createFileLineMap = (
 };
 
 const parseSearchResults = (results: string[]): Map<string, number[]> => {
-  const processedResults = processSearchResults(results);
+  const stdout = results.join('\n');
+  const parsedResults = parseRipgrepResults(stdout);
+  const processedResults = parsedResults.map(result => ({
+    filePath: result.filePath,
+    lineNumber: result.line
+  }));
   return createFileLineMap(processedResults);
 };
 
