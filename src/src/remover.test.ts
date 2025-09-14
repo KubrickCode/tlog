@@ -1,4 +1,4 @@
-import { processSearchResults } from "./remover";
+import { processSearchResults, createFileLineMap } from "./remover";
 
 describe("Remover Functions", () => {
   describe("processSearchResults", () => {
@@ -39,6 +39,32 @@ describe("Remover Functions", () => {
       expect(result).toHaveLength(2);
       expect(result[0].filePath).toBe("/path/to/file1.ts");
       expect(result[1].filePath).toBe("/path/to/file3.ts");
+    });
+  });
+
+  describe("createFileLineMap", () => {
+    test("creates file-line map from processed results", () => {
+      const processedResults = [
+        { filePath: "/path/file1.ts", lineNumber: 10 },
+        { filePath: "/path/file1.ts", lineNumber: 20 },
+        { filePath: "/path/file2.ts", lineNumber: 5 },
+        { filePath: "/path/file1.ts", lineNumber: 15 },
+      ];
+
+      const fileLineMap = createFileLineMap(processedResults);
+
+      expect(fileLineMap.size).toBe(2);
+      expect(fileLineMap.get("/path/file1.ts")).toEqual([10, 20, 15]);
+      expect(fileLineMap.get("/path/file2.ts")).toEqual([5]);
+    });
+
+    test("handles empty processed results", () => {
+      const processedResults: Array<{ filePath: string; lineNumber: number }> =
+        [];
+
+      const fileLineMap = createFileLineMap(processedResults);
+
+      expect(fileLineMap.size).toBe(0);
     });
   });
 });
