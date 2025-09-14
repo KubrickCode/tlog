@@ -314,7 +314,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   module.exports = {
     preset: "ts-jest",
     testEnvironment: "node",
-    testMatch: ["**/__tests__/**/*.test.ts"],
+    testMatch: ["src/**/*.test.ts"], // Test files in same directory as source files
     collectCoverageFrom: [
       "src/**/*.ts", // Only measure coverage for source files
       "!src/**/*.test.ts",
@@ -329,6 +329,47 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 - [x] VSCode API Mock Setup ✅ COMPLETED
 
   Created `/src/__mocks__/vscode.js` with essential VSCode API mocks for testing pure functions without VSCode dependencies.
+
+### 📋 Test Writing Guidelines
+
+**File Organization:**
+
+- Always create test files as one file unit (e.g., `tlog-patterns.test.ts`)
+- Keep test files in the same directory as the source files
+- Do not create separate `__tests__` directories
+
+**Test Structure:**
+
+- Top-level `describe` should represent the file/module unit (e.g., `"TLOG Pattern Matching"`)
+- Use nested `describe` for logical grouping within the file
+- Write small unit `it`/`test` cases under nested describes
+
+**Test Coverage Requirements:**
+
+- **Minimum requirement**: At least 1 success case + 1 failure case per function/feature
+- **Best practice**: Write as many test cases as needed to ensure comprehensive coverage
+- Always include edge cases, boundary conditions, and error scenarios
+
+**Example Structure:**
+
+```typescript
+describe("Module Name", () => {
+  describe("Function Group", () => {
+    test("should handle success case 1", () => {
+      /* success case */
+    });
+    test("should handle success case 2", () => {
+      /* another success case */
+    });
+    test("should handle failure case 1", () => {
+      /* failure case */
+    });
+    test("should handle edge case", () => {
+      /* edge case */
+    });
+  });
+});
+```
 
 ## ✅ Completed Refactoring (Progress Update)
 
