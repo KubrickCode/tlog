@@ -117,19 +117,25 @@ src/src/
   };
   ```
 
-#### 2.2 Split `scanTlogs()` in `tlog-tree-provider.ts` ✨ High priority
+#### 2.2 Split `scanTlogs()` in `tlog-tree-provider.ts` ✨ High priority ✅ COMPLETED
 
 **Problem**: Same issue - too many responsibilities in one function
 
-- [ ] Separate into pure functions
+- [x] Separate into pure functions
 
   ```typescript
-  // Pure functions
-  export const groupTlogsByFile = (searchResults: string[]) => {
+  // Pure functions extracted to src/core/tree-builder.ts
+  export const groupTlogsByFile = (
+    searchResults: string[],
+    parseRipgrepResults: (content: string) => any[]
+  ): TlogFileGroup[] => {
     // Only grouping logic - easy to test
   };
 
-  export const buildDirectoryTree = (groups: TlogFileGroup[]) => {
+  export const buildDirectoryTree = (
+    groups: TlogFileGroup[],
+    workspacePath: string
+  ): TlogDirectoryNode => {
     // Only tree structure creation logic - easy to test
   };
   ```
@@ -225,8 +231,40 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
         { filePath: "/root/src/file1.ts", items: [] },
         { filePath: "/root/src/utils/file2.ts", items: [] },
       ];
-      const tree = buildDirectoryTree(groups);
+      const tree = buildDirectoryTree(groups, "/root");
       expect(tree.children.has("src")).toBe(true);
+    });
+
+    test("Group TLOGs by file correctly", () => {
+      const searchResults = [
+        '/path/file1.ts:10:5:console.log("[TLOG] test1");',
+        '/path/file1.ts:20:5:console.log("[TLOG] test2");',
+        '/path/file2.ts:15:3:console.log("[TLOG] test3");',
+      ];
+      const mockParseFunction = (content: string) => [
+        {
+          filePath: "/path/file1.ts",
+          line: 9,
+          column: 4,
+          content: 'console.log("[TLOG] test1");',
+        },
+        {
+          filePath: "/path/file1.ts",
+          line: 19,
+          column: 4,
+          content: 'console.log("[TLOG] test2");',
+        },
+        {
+          filePath: "/path/file2.ts",
+          line: 14,
+          column: 2,
+          content: 'console.log("[TLOG] test3");',
+        },
+      ];
+      const groups = groupTlogsByFile(searchResults, mockParseFunction);
+      expect(groups).toHaveLength(2);
+      expect(groups[0].items).toHaveLength(2);
+      expect(groups[1].items).toHaveLength(1);
     });
   });
   ```
@@ -350,6 +388,28 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 - 🚀 Maintained 100% existing functionality
 - 📝 Added clear separation between pure functions and UI logic
 
+### 🎯 Priority 2.2: Split scanTlogs() Function - COMPLETED
+
+**Created**: `/src/core/tree-builder.ts`
+
+**Implemented Functions**:
+
+- `groupTlogsByFile(searchResults: string[], parseRipgrepResults: (content: string) => any[]): TlogFileGroup[]` - Pure grouping function
+- `buildDirectoryTree(groups: TlogFileGroup[], workspacePath: string): TlogDirectoryNode` - Pure tree building function
+- Type definitions: `TlogItem`, `TlogFileGroup`, `TlogDirectoryNode`
+
+**Updated Files**:
+
+- ✅ `tlog-tree-provider.ts`: Removed duplicate functions, now imports and uses pure functions from tree-builder
+
+**Benefits Achieved**:
+
+- 🧪 Created testable pure functions for tree data processing
+- 🚫 Eliminated duplicate type definitions
+- 🔧 Separated tree building logic from VSCode API dependencies
+- 🚀 Maintained 100% existing tree view functionality
+- 📝 Centralized tree data structures and algorithms
+
 ---
 
 ## 🚀 Actual Work Order (Realistic Plan)
@@ -366,7 +426,8 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] Extract `processSearchResults()` function from `remover.ts` ✅ COMPLETED
 - [x] Extract `createFileLineMap()` function from `remover.ts` ✅ COMPLETED
-- [ ] Extract `groupTlogsByFile()` function from `tlog-tree-provider.ts`
+- [x] Extract `groupTlogsByFile()` function from `tlog-tree-provider.ts` ✅ COMPLETED
+- [x] Extract `buildDirectoryTree()` function from `tlog-tree-provider.ts` ✅ COMPLETED
 - [ ] Write tests for pure functions
 
 ### 📅 Week 2: Cleanup remaining issues (if needed)

@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
+import { TlogItem, TlogDirectoryNode } from "./core/tree-builder";
 import {
-  TlogItem,
-  TlogFileGroup,
-  TlogDirectoryNode,
   TlogDirectoryTreeItem,
   TlogFileTreeItem,
   TlogItemTreeItem,
