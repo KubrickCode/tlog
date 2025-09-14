@@ -184,16 +184,19 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 #### 1.1 TLOG Pattern Matching Tests
 
-- [ ] `src/core/__tests__/tlog-patterns.test.ts`
+- [x] `src/core/tlog-patterns.test.ts` ✅ COMPLETED
 
   ```typescript
   describe("TLOG Pattern Matching", () => {
-    test("TLOG pattern matches correctly", () => {
-      expect(TLOG_PATTERN.test('console.log("[TLOG] test");')).toBe(true);
-    });
-
-    test("Regular console.log should not match", () => {
-      expect(TLOG_PATTERN.test('console.log("test");')).toBe(false);
+    describe("TLOG_PATTERN regex", () => {
+      test("matches console.log with [TLOG] prefix", () => { ... });
+      test("does not match regular console.log without [TLOG]", () => { ... });
+      test("matches with extra whitespace around parentheses", () => { ... });
+      test("matches case insensitive", () => { ... });
+      test("matches with different quote types", () => { ... });
+      test("does not match without console.log", () => { ... });
+      test("does not match with incomplete TLOG tag", () => { ... });
+      test("matches with complex message content", () => { ... });
     });
   });
   ```
