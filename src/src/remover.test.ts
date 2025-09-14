@@ -44,6 +44,16 @@ describe("Remover Functions", () => {
       expect(result[0].filePath).toBe("/path/to/file1.ts");
       expect(result[1].filePath).toBe("/path/to/file3.ts");
     });
+
+    test("ignores lines with extra colons in path", () => {
+      const searchResults = [
+        '/path/with:colons/file.ts:10:5:console.log("[TLOG] test");',
+      ];
+
+      const result = processSearchResults(searchResults);
+
+      expect(result).toHaveLength(0);
+    });
   });
 
   describe("createFileLineMap", () => {

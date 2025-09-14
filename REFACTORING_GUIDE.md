@@ -305,13 +305,14 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `remover.test.ts` - Remover function tests ✅ COMPLETED
 
-  **Total 7 test cases**
+  **Total 8 test cases**
 
   ```typescript
   describe("Remover Functions", () => {
     describe("processSearchResults", () => {
       test("processes ripgrep results correctly", () => { ... });
       test("ignores malformed lines", () => { ... });
+      test("ignores lines with extra colons in path", () => { ... });
     });
 
     describe("createFileLineMap", () => {
