@@ -1,0 +1,105 @@
+import { getTotalTlogCount } from "./tlog-tree-remover";
+import { TlogDirectoryNode } from "./core/tree-builder";
+
+describe("Tree Remover Functions", () => {
+  describe("getTotalTlogCount", () => {
+    test("counts TLOGs in directory with files only", () => {
+      const node: TlogDirectoryNode = {
+        name: "src",
+        fullPath: "/root/src",
+        children: new Map(),
+        files: [
+          {
+            filePath: "/root/src/file1.ts",
+            items: [
+              {
+                filePath: "/root/src/file1.ts",
+                line: 10,
+                column: 5,
+                content: 'console.log("[TLOG] test1");',
+              },
+              {
+                filePath: "/root/src/file1.ts",
+                line: 20,
+                column: 5,
+                content: 'console.log("[TLOG] test2");',
+              },
+            ],
+          },
+          {
+            filePath: "/root/src/file2.ts",
+            items: [
+              {
+                filePath: "/root/src/file2.ts",
+                line: 15,
+                column: 3,
+                content: 'console.log("[TLOG] test3");',
+              },
+            ],
+          },
+        ],
+      };
+
+      const count = getTotalTlogCount(node);
+
+      expect(count).toBe(3);
+    });
+
+    test("counts TLOGs recursively in nested directories", () => {
+      const childNode: TlogDirectoryNode = {
+        name: "utils",
+        fullPath: "/root/src/utils",
+        children: new Map(),
+        files: [
+          {
+            filePath: "/root/src/utils/helper.ts",
+            items: [
+              {
+                filePath: "/root/src/utils/helper.ts",
+                line: 5,
+                column: 0,
+                content: 'console.log("[TLOG] helper");',
+              },
+            ],
+          },
+        ],
+      };
+
+      const rootNode: TlogDirectoryNode = {
+        name: "src",
+        fullPath: "/root/src",
+        children: new Map([["utils", childNode]]),
+        files: [
+          {
+            filePath: "/root/src/main.ts",
+            items: [
+              {
+                filePath: "/root/src/main.ts",
+                line: 10,
+                column: 5,
+                content: 'console.log("[TLOG] main");',
+              },
+            ],
+          },
+        ],
+      };
+
+      const count = getTotalTlogCount(rootNode);
+
+      expect(count).toBe(2);
+    });
+
+    test("returns 0 for empty directory", () => {
+      const node: TlogDirectoryNode = {
+        name: "empty",
+        fullPath: "/root/empty",
+        children: new Map(),
+        files: [],
+      };
+
+      const count = getTotalTlogCount(node);
+
+      expect(count).toBe(0);
+    });
+  });
+});

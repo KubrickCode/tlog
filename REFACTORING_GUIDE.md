@@ -319,6 +319,20 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   });
   ```
 
+- [x] `tlog-tree-remover.test.ts` - getTotalTlogCount function tests ✅ COMPLETED
+
+  **Total 3 test cases**
+
+  ```typescript
+  describe("Tree Remover Functions", () => {
+    describe("getTotalTlogCount", () => {
+      test("counts TLOGs in directory with files only", () => { ... });
+      test("counts TLOGs recursively in nested directories", () => { ... });
+      test("returns 0 for empty directory", () => { ... });
+    });
+  });
+  ```
+
 - [ ] Line finding tests using Mock VSCode Document
 - [ ] File path processing logic tests
 
