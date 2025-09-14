@@ -46,11 +46,11 @@ src/src/
 
 ### Priority 1️⃣: Remove Duplicate Code (ensure test stability)
 
-#### 1.1 Unify TLOG Search Logic ✨ Start immediately
+#### 1.1 Unify TLOG Search Logic ✅ COMPLETED
 
 **Problem**: Duplicate ripgrep execution code in `remover.ts` and `tlog-tree-provider.ts`
 
-- [ ] Create `src/core/tlog-search.ts` (simple functions only)
+- [x] Create `src/core/tlog-search.ts` (simple functions only)
 
   ```typescript
   // Pure functions only - easy to test
@@ -282,6 +282,31 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   };
   ```
 
+## ✅ Completed Refactoring (Progress Update)
+
+### 🎯 Priority 1.1: TLOG Search Logic Unification - COMPLETED
+
+**Created**: `/src/core/tlog-search.ts`
+
+**Implemented Functions**:
+
+- `buildRipgrepCommand(workspacePath: string): string` - Pure command building function
+- `parseRipgrepResults(stdout: string): ParsedRipgrepResult[]` - Pure parsing function
+- `ParsedRipgrepResult` type definition
+
+**Updated Files**:
+
+- ✅ `remover.ts`: Removed duplicate constants, now uses `buildRipgrepCommand()`
+- ✅ `tlog-tree-provider.ts`: Removed duplicate constants, now uses both functions
+
+**Benefits Achieved**:
+
+- 🚫 Eliminated duplicate RIPGREP_SEARCH_PATTERN and NODE_MODULES_EXCLUDE_PATTERN
+- 🧪 Created pure functions ready for unit testing
+- 🔧 Centralized ripgrep logic maintenance
+
+---
+
 ## 🚀 Actual Work Order (Realistic Plan)
 
 ### 📅 Week 1: Foundation Work (2-3 days)
@@ -289,7 +314,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 **Day 1**: Start with duplicate removal
 
 - [ ] Create `src/core/tlog-patterns.ts` → consolidate constants
-- [ ] Create `src/core/tlog-search.ts` → consolidate ripgrep logic
+- [x] Create `src/core/tlog-search.ts` → consolidate ripgrep logic ✅ COMPLETED
 - [ ] Set up test environment (Jest)
 
 **Day 2**: Pure function separation

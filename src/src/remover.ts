@@ -1,10 +1,8 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
-import { rgPath } from "@vscode/ripgrep";
+import { buildRipgrepCommand, parseRipgrepResults } from "./core/tlog-search";
 
 const TLOG_PATTERN = /console\.log\s*\(\s*.*\[TLOG\].*\)/i;
-const RIPGREP_SEARCH_PATTERN = "console.log.*[TLOG]";
-const NODE_MODULES_EXCLUDE_PATTERN = "!**/node_modules/**";
 const CONFIRMATION_YES = "Yes";
 const CONFIRMATION_NO = "No";
 const RIPGREP_LINE_INDEX_OFFSET = 1;
@@ -123,7 +121,7 @@ const getWorkspacePath = (): string | null => {
 
 const searchTlogsWithRipgrep = (workspacePath: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
-    const command = `"${rgPath}" --vimgrep "${RIPGREP_SEARCH_PATTERN}" "${workspacePath}" -g "${NODE_MODULES_EXCLUDE_PATTERN}"`;
+    const command = buildRipgrepCommand(workspacePath);
 
     cp.exec(command, (error, stdout, stderr) => {
       if (error && !stdout) {
