@@ -164,5 +164,77 @@ describe("Tree Builder Functions", () => {
       expect(tree.children.size).toBe(0);
       expect(tree.files).toHaveLength(0);
     });
+
+    test("handles single file in root directory", () => {
+      const groups: TlogFileGroup[] = [
+        {
+          filePath: "/root/main.ts",
+          items: [],
+        },
+      ];
+
+      const tree = buildDirectoryTree(groups, "/root");
+
+      expect(tree.files).toHaveLength(1);
+      expect(tree.files[0].filePath).toBe("/root/main.ts");
+      expect(tree.children.size).toBe(0);
+    });
+
+    test("handles multiple files in same directory", () => {
+      const groups: TlogFileGroup[] = [
+        {
+          filePath: "/root/src/file1.ts",
+          items: [],
+        },
+        {
+          filePath: "/root/src/file2.ts",
+          items: [],
+        },
+        {
+          filePath: "/root/src/file3.ts",
+          items: [],
+        },
+      ];
+
+      const tree = buildDirectoryTree(groups, "/root");
+
+      expect(tree.children.has("src")).toBe(true);
+      const srcNode = tree.children.get("src")!;
+      expect(srcNode.files).toHaveLength(3);
+      expect(srcNode.files.map((f) => f.filePath)).toEqual(
+        expect.arrayContaining([
+          "/root/src/file1.ts",
+          "/root/src/file2.ts",
+          "/root/src/file3.ts",
+        ])
+      );
+    });
+
+    test("handles files at different directory levels", () => {
+      const groups: TlogFileGroup[] = [
+        {
+          filePath: "/root/file.ts",
+          items: [],
+        },
+        {
+          filePath: "/root/src/nested/deep/file.ts",
+          items: [],
+        },
+      ];
+
+      const tree = buildDirectoryTree(groups, "/root");
+
+      expect(tree.files).toHaveLength(1);
+      expect(tree.files[0].filePath).toBe("/root/file.ts");
+
+      expect(tree.children.has("src")).toBe(true);
+      const srcNode = tree.children.get("src")!;
+      expect(srcNode.children.has("nested")).toBe(true);
+      const nestedNode = srcNode.children.get("nested")!;
+      expect(nestedNode.children.has("deep")).toBe(true);
+      const deepNode = nestedNode.children.get("deep")!;
+      expect(deepNode.files).toHaveLength(1);
+      expect(deepNode.files[0].filePath).toBe("/root/src/nested/deep/file.ts");
+    });
   });
 });

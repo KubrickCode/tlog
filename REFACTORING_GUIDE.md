@@ -240,7 +240,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `src/core/tree-builder.test.ts` ✅ COMPLETED
 
-  **Total 6 test cases**
+  **Total 9 test cases**
 
   ```typescript
   describe("Tree Builder Functions", () => {
@@ -254,6 +254,9 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
     describe("buildDirectoryTree", () => {
       test("builds directory tree from file groups", () => { ... });
       test("handles empty groups array", () => { ... });
+      test("handles single file in root directory", () => { ... });
+      test("handles multiple files in same directory", () => { ... });
+      test("handles files at different directory levels", () => { ... });
     });
   });
   ```
