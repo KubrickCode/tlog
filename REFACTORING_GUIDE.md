@@ -319,9 +319,9 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   });
   ```
 
-- [x] `tlog-tree-remover.test.ts` - getTotalTlogCount function tests ✅ COMPLETED
+- [x] `tlog-tree-remover.test.ts` - Tree remover function tests ✅ COMPLETED
 
-  **Total 3 test cases**
+  **Total 6 test cases**
 
   ```typescript
   describe("Tree Remover Functions", () => {
@@ -329,6 +329,12 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
       test("counts TLOGs in directory with files only", () => { ... });
       test("counts TLOGs recursively in nested directories", () => { ... });
       test("returns 0 for empty directory", () => { ... });
+    });
+
+    describe("collectAllFilePaths", () => {
+      test("collects file paths from directory with files only", () => { ... });
+      test("collects file paths recursively from nested directories", () => { ... });
+      test("returns empty array for directory with no files", () => { ... });
     });
   });
   ```

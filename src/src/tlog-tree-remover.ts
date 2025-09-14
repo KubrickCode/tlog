@@ -181,7 +181,7 @@ export const getTotalTlogCount = (node: TlogDirectoryNode): number => {
   return count;
 };
 
-const collectAllFilePaths = (node: TlogDirectoryNode): string[] => {
+export const collectAllFilePaths = (node: TlogDirectoryNode): string[] => {
   const filePaths: string[] = [];
 
   node.files.forEach((file) => {
