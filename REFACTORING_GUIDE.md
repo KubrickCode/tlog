@@ -236,7 +236,23 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 #### 2.1 Directory Tree Building Tests
 
-- [ ] `src/core/__tests__/tree-builder.test.ts`
+- [x] `src/core/tree-builder.test.ts` ✅ COMPLETED
+
+  **Total 4 test cases**
+
+  ```typescript
+  describe("Tree Builder Functions", () => {
+    describe("groupTlogsByFile", () => {
+      test("groups TLOGs by file correctly", () => { ... });
+      test("returns empty array when no results", () => { ... });
+    });
+
+    describe("buildDirectoryTree", () => {
+      test("builds directory tree from file groups", () => { ... });
+      test("handles empty groups array", () => { ... });
+    });
+  });
+  ```
 
   ```typescript
   describe("Directory Tree Building", () => {
