@@ -332,7 +332,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `tlog-tree-remover.test.ts` - Tree remover function tests ✅ COMPLETED
 
-  **Total 6 test cases**
+  **Total 8 test cases**
 
   ```typescript
   describe("Tree Remover Functions", () => {
@@ -340,6 +340,8 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
       test("counts TLOGs in directory with files only", () => { ... });
       test("counts TLOGs recursively in nested directories", () => { ... });
       test("returns 0 for empty directory", () => { ... });
+      test("counts TLOGs in deeply nested directory structure", () => { ... });
+      test("counts TLOGs when some files have no items", () => { ... });
     });
 
     describe("collectAllFilePaths", () => {
