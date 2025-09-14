@@ -12,6 +12,17 @@ install-package:
 package:
   cd "{{ extension_dir }}" && yarn compile && yarn package
 
+test mode="":
+  #!/usr/bin/env bash
+  cd "{{ extension_dir }}"
+  if [ "{{ mode }}" = "watch" ]; then
+    yarn test:watch
+  elif [ "{{ mode }}" = "coverage" ]; then
+    yarn test --coverage
+  else
+    yarn test
+  fi
+
 publish target="both":
   #!/usr/bin/env bash
   cd "{{ extension_dir }}"
