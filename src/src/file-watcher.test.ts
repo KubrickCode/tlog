@@ -40,5 +40,40 @@ describe("File Watcher Functions", () => {
       expect(shouldProcessFile("/project/app/api/handlers.js")).toBe(true);
       expect(shouldProcessFile("/project/packages/ui/Button.tsx")).toBe(true);
     });
+
+    test("handles Windows-style path separators", () => {
+      expect(shouldProcessFile("C:/project/src/main.ts")).toBe(true);
+      expect(
+        shouldProcessFile("C:/project/node_modules/package/index.js")
+      ).toBe(false);
+      expect(shouldProcessFile("C:/project/.git/config")).toBe(false);
+    });
+
+    test("handles case sensitivity in directory names", () => {
+      expect(shouldProcessFile("/project/Node_Modules/package/index.js")).toBe(
+        true
+      );
+      expect(shouldProcessFile("/project/.GIT/config")).toBe(true);
+      expect(shouldProcessFile("/project/.vscode-test/config.json")).toBe(true);
+      expect(shouldProcessFile("/project/.vscode/Settings.json")).toBe(false);
+    });
+
+    test("handles root directory and single-level paths", () => {
+      expect(shouldProcessFile("/main.ts")).toBe(true);
+      expect(shouldProcessFile("/node_modules/package/index.js")).toBe(false);
+      expect(shouldProcessFile("/.git")).toBe(false);
+    });
+
+    test("handles deeply nested excluded directories", () => {
+      expect(
+        shouldProcessFile("/project/src/deep/nested/node_modules/lib/index.js")
+      ).toBe(false);
+      expect(
+        shouldProcessFile("/project/src/deep/nested/.git/hooks/pre-commit")
+      ).toBe(false);
+      expect(shouldProcessFile("/project/src/deep/nested/dist/bundle.js")).toBe(
+        false
+      );
+    });
   });
 });

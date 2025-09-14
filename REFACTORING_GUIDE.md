@@ -356,7 +356,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `file-watcher.test.ts` - shouldProcessFile function tests ✅ COMPLETED
 
-  **Total 4 test cases**
+  **Total 8 test cases**
 
   ```typescript
   describe("File Watcher Functions", () => {
@@ -365,6 +365,10 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
       test("returns false for excluded directories", () => { ... });
       test("returns false for files ending with excluded directory names", () => { ... });
       test("returns true for files in nested non-excluded directories", () => { ... });
+      test("handles Windows-style path separators", () => { ... });
+      test("handles case sensitivity in directory names", () => { ... });
+      test("handles root directory and single-level paths", () => { ... });
+      test("handles deeply nested excluded directories", () => { ... });
     });
   });
   ```
