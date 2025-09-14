@@ -301,7 +301,21 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 ### Step 3: File Processing Logic Tests ✨ Only if needed
 
+- [x] `remover.test.ts` - processSearchResults function tests ✅ COMPLETED
+
+  **Total 2 test cases**
+
+  ```typescript
+  describe("Remover Functions", () => {
+    describe("processSearchResults", () => {
+      test("processes ripgrep results correctly", () => { ... });
+      test("ignores malformed lines", () => { ... });
+    });
+  });
+  ```
+
 - [ ] Line finding tests using Mock VSCode Document
+- [ ] createFileLineMap function tests
 - [ ] File path processing logic tests
 
 ## 📊 Test Writing Guidelines
