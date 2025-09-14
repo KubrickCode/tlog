@@ -314,13 +314,13 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   module.exports = {
     preset: "ts-jest",
     testEnvironment: "node",
-    testMatch: ["src/**/*.test.ts"], // Test files in same directory as source files
+    testMatch: ["**/*.test.ts"], // Test files in same directory as source files
     collectCoverageFrom: [
       "src/**/*.ts", // Only measure coverage for source files
       "!src/**/*.test.ts",
       "!src/main.ts", // Exclude entry point
     ],
-    moduleNameMapping: {
+    moduleNameMapper: {
       "^vscode$": "<rootDir>/__mocks__/vscode.js",
     },
   };
