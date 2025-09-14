@@ -339,8 +339,22 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
   });
   ```
 
+- [x] `file-watcher.test.ts` - shouldProcessFile function tests ✅ COMPLETED
+
+  **Total 4 test cases**
+
+  ```typescript
+  describe("File Watcher Functions", () => {
+    describe("shouldProcessFile", () => {
+      test("returns true for regular source files", () => { ... });
+      test("returns false for excluded directories", () => { ... });
+      test("returns false for files ending with excluded directory names", () => { ... });
+      test("returns true for files in nested non-excluded directories", () => { ... });
+    });
+  });
+  ```
+
 - [ ] Line finding tests using Mock VSCode Document
-- [ ] File path processing logic tests
 
 ## 📊 Test Writing Guidelines
 
