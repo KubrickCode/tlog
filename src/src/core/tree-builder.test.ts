@@ -50,6 +50,71 @@ describe("Tree Builder Functions", () => {
 
       expect(groups).toHaveLength(0);
     });
+
+    test("handles single file with multiple TLOGs", () => {
+      const searchResults = ["result1"];
+      const mockParseFunction = (content: string): ParsedRipgrepResult[] => [
+        {
+          filePath: "/path/single.ts",
+          line: 5,
+          column: 0,
+          content: 'console.log("[TLOG] first");',
+        },
+        {
+          filePath: "/path/single.ts",
+          line: 10,
+          column: 0,
+          content: 'console.log("[TLOG] second");',
+        },
+        {
+          filePath: "/path/single.ts",
+          line: 15,
+          column: 0,
+          content: 'console.log("[TLOG] third");',
+        },
+      ];
+
+      const groups = groupTlogsByFile(searchResults, mockParseFunction);
+
+      expect(groups).toHaveLength(1);
+      expect(groups[0].filePath).toBe("/path/single.ts");
+      expect(groups[0].items).toHaveLength(3);
+      expect(groups[0].items[0].line).toBe(5);
+      expect(groups[0].items[1].line).toBe(10);
+      expect(groups[0].items[2].line).toBe(15);
+    });
+
+    test("sorts TLOG items by line number", () => {
+      const searchResults = ["result1"];
+      const mockParseFunction = (content: string): ParsedRipgrepResult[] => [
+        {
+          filePath: "/path/file.ts",
+          line: 20,
+          column: 0,
+          content: 'console.log("[TLOG] third");',
+        },
+        {
+          filePath: "/path/file.ts",
+          line: 5,
+          column: 0,
+          content: 'console.log("[TLOG] first");',
+        },
+        {
+          filePath: "/path/file.ts",
+          line: 10,
+          column: 0,
+          content: 'console.log("[TLOG] second");',
+        },
+      ];
+
+      const groups = groupTlogsByFile(searchResults, mockParseFunction);
+
+      expect(groups).toHaveLength(1);
+      expect(groups[0].items).toHaveLength(3);
+      expect(groups[0].items[0].line).toBe(5);
+      expect(groups[0].items[1].line).toBe(10);
+      expect(groups[0].items[2].line).toBe(20);
+    });
   });
 
   describe("buildDirectoryTree", () => {

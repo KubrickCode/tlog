@@ -240,13 +240,15 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `src/core/tree-builder.test.ts` ✅ COMPLETED
 
-  **Total 4 test cases**
+  **Total 6 test cases**
 
   ```typescript
   describe("Tree Builder Functions", () => {
     describe("groupTlogsByFile", () => {
       test("groups TLOGs by file correctly", () => { ... });
       test("returns empty array when no results", () => { ... });
+      test("handles single file with multiple TLOGs", () => { ... });
+      test("sorts TLOG items by line number", () => { ... });
     });
 
     describe("buildDirectoryTree", () => {
