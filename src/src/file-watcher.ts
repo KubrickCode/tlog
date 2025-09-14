@@ -44,26 +44,7 @@ export class TlogFileWatcher {
   }
 
   private shouldProcessFile(filePath: string): boolean {
-    const excludePatterns = [
-      "node_modules",
-      ".git",
-      ".vscode",
-      "dist",
-      "build",
-      "out",
-      "coverage",
-      ".next",
-      ".nuxt",
-      ".cache",
-      "tmp",
-      "temp",
-    ];
-
-    return !excludePatterns.some(
-      (pattern) =>
-        filePath.includes(path.sep + pattern + path.sep) ||
-        filePath.endsWith(path.sep + pattern)
-    );
+    return shouldProcessFile(filePath);
   }
 
   private debouncedRefresh(): void {
@@ -94,3 +75,26 @@ export class TlogFileWatcher {
     }
   }
 }
+
+export const shouldProcessFile = (filePath: string): boolean => {
+  const excludePatterns = [
+    "node_modules",
+    ".git",
+    ".vscode",
+    "dist",
+    "build",
+    "out",
+    "coverage",
+    ".next",
+    ".nuxt",
+    ".cache",
+    "tmp",
+    "temp",
+  ];
+
+  return !excludePatterns.some(
+    (pattern) =>
+      filePath.toLowerCase().includes(path.sep + pattern + path.sep) ||
+      filePath.toLowerCase().endsWith(path.sep + pattern)
+  );
+};

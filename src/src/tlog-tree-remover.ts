@@ -169,7 +169,7 @@ const deleteLinesFromDocument = async (
   return await vscode.workspace.applyEdit(edit);
 };
 
-const getTotalTlogCount = (node: TlogDirectoryNode): number => {
+export const getTotalTlogCount = (node: TlogDirectoryNode): number => {
   let count = 0;
 
   count += node.files.reduce((sum, file) => sum + file.items.length, 0);
@@ -181,7 +181,7 @@ const getTotalTlogCount = (node: TlogDirectoryNode): number => {
   return count;
 };
 
-const collectAllFilePaths = (node: TlogDirectoryNode): string[] => {
+export const collectAllFilePaths = (node: TlogDirectoryNode): string[] => {
   const filePaths: string[] = [];
 
   node.files.forEach((file) => {
