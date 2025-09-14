@@ -275,5 +275,94 @@ describe("Tree Remover Functions", () => {
 
       expect(filePaths).toHaveLength(0);
     });
+
+    test("collects file paths from complex nested structure", () => {
+      const deepChildNode: TlogDirectoryNode = {
+        name: "deep",
+        fullPath: "/root/src/components/ui/deep",
+        children: new Map(),
+        files: [
+          {
+            filePath: "/root/src/components/ui/deep/Button.ts",
+            items: [],
+          },
+        ],
+      };
+
+      const childNode: TlogDirectoryNode = {
+        name: "ui",
+        fullPath: "/root/src/components/ui",
+        children: new Map([["deep", deepChildNode]]),
+        files: [
+          {
+            filePath: "/root/src/components/ui/Input.ts",
+            items: [],
+          },
+        ],
+      };
+
+      const componentsNode: TlogDirectoryNode = {
+        name: "components",
+        fullPath: "/root/src/components",
+        children: new Map([["ui", childNode]]),
+        files: [
+          {
+            filePath: "/root/src/components/Layout.ts",
+            items: [],
+          },
+        ],
+      };
+
+      const rootNode: TlogDirectoryNode = {
+        name: "src",
+        fullPath: "/root/src",
+        children: new Map([["components", componentsNode]]),
+        files: [
+          {
+            filePath: "/root/src/main.ts",
+            items: [],
+          },
+          {
+            filePath: "/root/src/utils.ts",
+            items: [],
+          },
+        ],
+      };
+
+      const filePaths = collectAllFilePaths(rootNode);
+
+      expect(filePaths).toHaveLength(5);
+      expect(filePaths).toContain("/root/src/main.ts");
+      expect(filePaths).toContain("/root/src/utils.ts");
+      expect(filePaths).toContain("/root/src/components/Layout.ts");
+      expect(filePaths).toContain("/root/src/components/ui/Input.ts");
+      expect(filePaths).toContain("/root/src/components/ui/deep/Button.ts");
+    });
+
+    test("handles empty child directories", () => {
+      const emptyChildNode: TlogDirectoryNode = {
+        name: "empty",
+        fullPath: "/root/src/empty",
+        children: new Map(),
+        files: [],
+      };
+
+      const rootNode: TlogDirectoryNode = {
+        name: "src",
+        fullPath: "/root/src",
+        children: new Map([["empty", emptyChildNode]]),
+        files: [
+          {
+            filePath: "/root/src/main.ts",
+            items: [],
+          },
+        ],
+      };
+
+      const filePaths = collectAllFilePaths(rootNode);
+
+      expect(filePaths).toHaveLength(1);
+      expect(filePaths).toContain("/root/src/main.ts");
+    });
   });
 });
