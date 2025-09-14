@@ -305,7 +305,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `remover.test.ts` - Remover function tests ✅ COMPLETED
 
-  **Total 8 test cases**
+  **Total 10 test cases**
 
   ```typescript
   describe("Remover Functions", () => {
@@ -318,6 +318,8 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
     describe("createFileLineMap", () => {
       test("creates file-line map from processed results", () => { ... });
       test("handles empty processed results", () => { ... });
+      test("handles duplicate line numbers for same file", () => { ... });
+      test("maintains order of processed results", () => { ... });
     });
 
     describe("findTlogLinesInDocument", () => {

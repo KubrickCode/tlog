@@ -80,6 +80,31 @@ describe("Remover Functions", () => {
 
       expect(fileLineMap.size).toBe(0);
     });
+
+    test("handles duplicate line numbers for same file", () => {
+      const processedResults = [
+        { filePath: "/path/file1.ts", lineNumber: 10 },
+        { filePath: "/path/file1.ts", lineNumber: 10 },
+        { filePath: "/path/file1.ts", lineNumber: 20 },
+      ];
+
+      const fileLineMap = createFileLineMap(processedResults);
+
+      expect(fileLineMap.size).toBe(1);
+      expect(fileLineMap.get("/path/file1.ts")).toEqual([10, 10, 20]);
+    });
+
+    test("maintains order of processed results", () => {
+      const processedResults = [
+        { filePath: "/path/file1.ts", lineNumber: 30 },
+        { filePath: "/path/file1.ts", lineNumber: 10 },
+        { filePath: "/path/file1.ts", lineNumber: 20 },
+      ];
+
+      const fileLineMap = createFileLineMap(processedResults);
+
+      expect(fileLineMap.get("/path/file1.ts")).toEqual([30, 10, 20]);
+    });
   });
 
   describe("findTlogLinesInDocument", () => {
