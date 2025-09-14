@@ -11,7 +11,7 @@ const RIPGREP_SEARCH_PATTERN = "console.log.*[TLOG]";
 const NODE_MODULES_EXCLUDE_PATTERN = "!**/node_modules/**";
 
 export const buildRipgrepCommand = (workspacePath: string): string => {
-  return `"${rgPath}" --vimgrep "${RIPGREP_SEARCH_PATTERN}" "${workspacePath}" -g "${NODE_MODULES_EXCLUDE_PATTERN}"`;
+  return `"${rgPath}" --json "${RIPGREP_SEARCH_PATTERN}" "${workspacePath}" -g "${NODE_MODULES_EXCLUDE_PATTERN}"`;
 };
 
 export const parseRipgrepResults = (stdout: string): ParsedRipgrepResult[] => {
@@ -19,25 +19,28 @@ export const parseRipgrepResults = (stdout: string): ParsedRipgrepResult[] => {
     .trim()
     .split("\n")
     .filter((line) => line.length > 0)
-    .map(parseResultLine)
+    .map(parseJsonLine)
     .filter((result): result is ParsedRipgrepResult => result !== null);
 };
 
-const parseResultLine = (line: string): ParsedRipgrepResult | null => {
-  const parts = line.split(":");
-  if (parts.length < 4) return null;
+const parseJsonLine = (line: string): ParsedRipgrepResult | null => {
+  try {
+    const json = JSON.parse(line);
 
-  const filePath = parts[0];
-  const lineNumber = parseInt(parts[1], 10);
-  const columnNumber = parseInt(parts[2], 10);
-  const content = parts.slice(3).join(":").trim();
+    if (json.type !== "match") return null;
 
-  if (isNaN(lineNumber) || isNaN(columnNumber)) return null;
+    const { path, lines, line_number } = json.data;
+    const matchData = json.data.submatches?.[0];
 
-  return {
-    filePath,
-    line: lineNumber - 1, // Convert to 0-based
-    column: columnNumber - 1, // Convert to 0-based
-    content,
-  };
+    if (!path || !lines || !line_number || !matchData) return null;
+
+    return {
+      filePath: path.text,
+      line: line_number - 1, // Convert to 0-based
+      column: matchData.start,
+      content: lines.text.trim(),
+    };
+  } catch (error) {
+    return null;
+  }
 };
