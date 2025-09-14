@@ -96,7 +96,7 @@ const getActiveEditor = (): vscode.TextEditor | null => {
   return editor;
 };
 
-const findTlogLinesInDocument = (
+export const findTlogLinesInDocument = (
   document: vscode.TextDocument
 ): vscode.Range[] => {
   const tlogLines: vscode.Range[] = [];

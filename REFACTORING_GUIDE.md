@@ -186,6 +186,8 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `src/core/tlog-patterns.test.ts` ✅ COMPLETED
 
+  **Total 19 test cases**
+
   ```typescript
   describe("TLOG Pattern Matching", () => {
     describe("TLOG_PATTERN regex", () => {
@@ -303,7 +305,7 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
 
 - [x] `remover.test.ts` - Remover function tests ✅ COMPLETED
 
-  **Total 4 test cases**
+  **Total 7 test cases**
 
   ```typescript
   describe("Remover Functions", () => {
@@ -315,6 +317,12 @@ import { RIPGREP_SEARCH_PATTERN } from "./tlog-tree-provider";
     describe("createFileLineMap", () => {
       test("creates file-line map from processed results", () => { ... });
       test("handles empty processed results", () => { ... });
+    });
+
+    describe("findTlogLinesInDocument", () => {
+      test("finds TLOG lines in document", () => { ... });
+      test("returns empty array when no TLOG lines found", () => { ... });
+      test("handles empty document", () => { ... });
     });
   });
   ```

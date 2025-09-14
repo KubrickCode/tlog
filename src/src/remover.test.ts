@@ -1,4 +1,8 @@
-import { processSearchResults, createFileLineMap } from "./remover";
+import {
+  processSearchResults,
+  createFileLineMap,
+  findTlogLinesInDocument,
+} from "./remover";
 
 describe("Remover Functions", () => {
   describe("processSearchResults", () => {
@@ -65,6 +69,65 @@ describe("Remover Functions", () => {
       const fileLineMap = createFileLineMap(processedResults);
 
       expect(fileLineMap.size).toBe(0);
+    });
+  });
+
+  describe("findTlogLinesInDocument", () => {
+    test("finds TLOG lines in document", () => {
+      const mockDocument = {
+        lineCount: 5,
+        lineAt: jest.fn((index: number) => ({
+          text: [
+            'console.log("regular message");',
+            'console.log("[TLOG] debug message");',
+            "const x = 1;",
+            'console.log("[TLOG] another message");',
+            'console.log("final message");',
+          ][index],
+          rangeIncludingLineBreak: {
+            start: { line: index, character: 0 },
+            end: { line: index + 1, character: 0 },
+          },
+        })),
+      };
+
+      const result = findTlogLinesInDocument(mockDocument as any);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].start.line).toBe(1);
+      expect(result[1].start.line).toBe(3);
+    });
+
+    test("returns empty array when no TLOG lines found", () => {
+      const mockDocument = {
+        lineCount: 3,
+        lineAt: jest.fn((index: number) => ({
+          text: [
+            'console.log("regular message");',
+            "const x = 1;",
+            'console.log("another message");',
+          ][index],
+          rangeIncludingLineBreak: {
+            start: { line: index, character: 0 },
+            end: { line: index + 1, character: 0 },
+          },
+        })),
+      };
+
+      const result = findTlogLinesInDocument(mockDocument as any);
+
+      expect(result).toHaveLength(0);
+    });
+
+    test("handles empty document", () => {
+      const mockDocument = {
+        lineCount: 0,
+        lineAt: jest.fn(),
+      };
+
+      const result = findTlogLinesInDocument(mockDocument as any);
+
+      expect(result).toHaveLength(0);
     });
   });
 });
