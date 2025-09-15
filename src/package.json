@@ -1,134 +1,11 @@
 {
-  "name": "tlog-vscode",
-  "displayName": "tlog",
+  "name": "tlog-vscode-src-code",
   "description": "Transient Log - Quick console.log with [TLOG] prefix for easy identification and removal",
-  "version": "0.2.0",
-  "publisher": "KubrickCode",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/KubrickCode/tlog.git"
-  },
-  "engines": {
-    "vscode": "^1.90.0"
-  },
-  "categories": [
-    "Snippets",
-    "Other"
-  ],
-  "keywords": [
-    "console.log",
-    "logging",
-    "debug",
-    "tlog",
-    "temporary"
-  ],
-  "activationEvents": [],
-  "main": "./out/src/main.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "tlog.insertTlog",
-        "title": "Insert TLOG",
-        "category": "tlog"
-      },
-      {
-        "command": "tlog.removeAllTlogs",
-        "title": "Remove All TLOGs",
-        "category": "tlog"
-      },
-      {
-        "command": "tlog.refreshTlogTree",
-        "title": "Refresh",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "tlog.openTlogLocation",
-        "title": "Open Location"
-      },
-      {
-        "command": "tlog.removeFilesTlogs",
-        "title": "Remove TLOGs from File",
-        "icon": "$(trash)"
-      },
-      {
-        "command": "tlog.removeDirectoryTlogs",
-        "title": "Remove TLOGs from Directory",
-        "icon": "$(trash)"
-      },
-      {
-        "command": "tlog.removeSingleTlog",
-        "title": "Remove This TLOG",
-        "icon": "$(close)"
-      }
-    ],
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "tlogContainer",
-          "title": "TLOG",
-          "icon": "$(debug-console)"
-        }
-      ]
-    },
-    "views": {
-      "tlogContainer": [
-        {
-          "id": "tlogExplorer",
-          "name": "TLOG Explorer",
-          "when": "workspaceFolderCount > 0"
-        }
-      ]
-    },
-    "menus": {
-      "view/title": [
-        {
-          "command": "tlog.refreshTlogTree",
-          "when": "view == tlogExplorer",
-          "group": "navigation"
-        }
-      ],
-      "view/item/context": [
-        {
-          "command": "tlog.removeFilesTlogs",
-          "when": "view == tlogExplorer && viewItem == tlogFile",
-          "group": "inline"
-        },
-        {
-          "command": "tlog.removeDirectoryTlogs",
-          "when": "view == tlogExplorer && viewItem == tlogDirectory",
-          "group": "inline"
-        },
-        {
-          "command": "tlog.removeSingleTlog",
-          "when": "view == tlogExplorer && viewItem == tlogItem",
-          "group": "inline"
-        }
-      ]
-    },
-    "keybindings": [
-      {
-        "command": "tlog.insertTlog",
-        "key": "ctrl+shift+t",
-        "mac": "cmd+shift+t",
-        "when": "editorTextFocus"
-      },
-      {
-        "command": "tlog.removeAllTlogs",
-        "key": "ctrl+shift+r",
-        "mac": "cmd+shift+r",
-        "when": "editorTextFocus"
-      }
-    ]
-  },
+  "version": "0.0.1",
   "scripts": {
     "compile": "tsc -p ./",
-    "package": "vsce package --out versions/",
-    "install-package": "code --install-extension versions/tlog-vscode-$npm_package_version.vsix",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "vsce-publish": "vsce publish",
-    "ovsx-publish": "ovsx publish"
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",
@@ -136,10 +13,6 @@
     "@types/vscode": "^1.90.0",
     "jest": "^29.0.0",
     "ts-jest": "^29.0.0",
-    "typescript": "5.9.2",
-    "@vscode/vsce": "3.0.0"
-  },
-  "dependencies": {
-    "@vscode/ripgrep": "1.15.9"
+    "typescript": "5.9.2"
   }
 }

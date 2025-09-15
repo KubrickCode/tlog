@@ -1,0 +1,70 @@
+# Source code files - only include compiled output
+src/src/
+src/__mocks__/
+src/*.test.ts
+src/*.test.js
+src/*.spec.ts
+src/*.spec.js
+
+# Development dependencies
+src/node_modules/
+
+# Development config files
+src/tsconfig.json
+src/jest.config.js
+src/.gitignore
+src/yarn.lock
+src/package-lock.json
+
+# Old build outputs (no longer used)
+src/out/
+
+# Development files
+.env
+.env.*
+!.env.example
+
+# VS Code specific
+.vscode-test/
+
+# Git
+.git/
+.gitignore
+
+# Documentation and development (keep README for marketplace)
+CLAUDE.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Source maps
+*.map
+
+# Other development files
+justfile
+.devcontainer/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Logs
+*.log

@@ -3,14 +3,20 @@ set dotenv-load
 root_dir := justfile_directory()
 extension_dir := root_dir + "/src"
 
-deps:
+deps: deps-extension deps-root
+
+deps-extension:
   cd "{{ extension_dir }}" && yarn install
 
+deps-root:
+  cd "{{ root_dir }}" && yarn install
+
 install-package:
-  cd "{{ extension_dir }}" && yarn install-package
+  cd "{{ root_dir }}" && yarn install-package
 
 package:
-  cd "{{ extension_dir }}" && yarn compile && yarn package
+  cd "{{ extension_dir }}" && yarn compile
+  cd "{{ root_dir }}" && yarn package
 
 test mode="":
   #!/usr/bin/env bash
@@ -25,7 +31,7 @@ test mode="":
 
 publish target="both":
   #!/usr/bin/env bash
-  cd "{{ extension_dir }}"
+  cd "{{ root_dir }}"
   if [ "{{ target }}" = "vsce" ] || [ "{{ target }}" = "both" ]; then
     echo "Publishing to VS Code Marketplace..."
     if [ -n "$VSCE_ACCESS_TOKEN" ]; then
