@@ -1,6 +1,7 @@
 {
   "name": "tlog-vscode",
   "displayName": "tlog",
+  "icon": "public/logo.png",
   "description": "Transient Log - Quick console.log with [TLOG] prefix for easy identification and removal",
   "version": "0.2.1",
   "publisher": "KubrickCode",
