@@ -3,6 +3,9 @@ set dotenv-load
 root_dir := justfile_directory()
 extension_dir := root_dir + "/src"
 
+degit source_dir target_dir:
+  degit https://github.com/KubrickCode/general/{{ source_dir }} {{ target_dir }}
+
 deps: deps-extension deps-root
 
 deps-extension:
@@ -10,6 +13,12 @@ deps-extension:
 
 deps-root:
   cd "{{ root_dir }}" && yarn install
+
+install-degit:
+  #!/usr/bin/env bash
+  if ! command -v degit &> /dev/null; then
+    npm install -g degit
+  fi
 
 install-package:
   cd "{{ root_dir }}" && yarn install-package
