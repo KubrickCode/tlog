@@ -129,7 +129,7 @@
     "ovsx-publish": "ovsx publish"
   },
   "devDependencies": {
-    "@vscode/vsce": "3.0.0"
+    "@vscode/vsce": "3.6.2"
   },
   "dependencies": {
     "@vscode/ripgrep": "1.15.9"
