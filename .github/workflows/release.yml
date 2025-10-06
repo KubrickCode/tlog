@@ -80,7 +80,6 @@ jobs:
             ## 🎉 What's New in ${{ steps.version.outputs.version }}
 
             ${{ steps.changelog.outputs.changelog }}
-            ---
           files: |
             versions/tlog-vscode-${{ steps.version.outputs.version_number }}.vsix
           generate_release_notes: true
