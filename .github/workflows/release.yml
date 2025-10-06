@@ -75,31 +75,12 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          name: tlog ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
           body: |
-            ## 🎉 What's New in tlog ${{ steps.version.outputs.version }}
+            ## 🎉 What's New in ${{ steps.version.outputs.version }}
 
             ${{ steps.changelog.outputs.changelog }}
-
-            ## 📦 Installation
-
-            ### From VSCode Marketplace
-            ```
-            ext install KubrickCode.tlog-vscode
-            ```
-
-            ### From VSIX file
-            Download the `.vsix` file below and install via:
-            - Command Palette → `Extensions: Install from VSIX`
-            - Or drag and drop into VSCode
-
-            ## 🔗 Links
-            - [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=KubrickCode.tlog-vscode)
-            - [Open VSX Registry](https://open-vsx.org/extension/KubrickCode/tlog-vscode)
-
             ---
-
-            Publishing to marketplaces...
           files: |
             versions/tlog-vscode-${{ steps.version.outputs.version_number }}.vsix
           generate_release_notes: true
