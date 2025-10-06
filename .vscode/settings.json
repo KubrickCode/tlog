@@ -76,7 +76,7 @@
     {
       "name": "Release",
       "color": "purple",
-      "command": "git push -f origin main:release",
+      "command": "just release",
       "useVsCodeApi": false,
       "terminalName": "Release"
     }
