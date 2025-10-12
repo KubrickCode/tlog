@@ -96,7 +96,9 @@ Choose scope and remove all TLOGs with confirmation dialogs.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+This project started as a small personal project with a development environment highly tailored to the owner. Given the low probability of external contributors, the current setup is unlikely to change.
+
+If you'd like to contribute, please contact kubrickcode@gmail.com and we'll adapt the environment to accommodate contributions.
 
 ## License
 
