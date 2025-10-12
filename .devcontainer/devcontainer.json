@@ -8,5 +8,15 @@
     "./local-features/just": {},
     "./local-features/node": {}
   },
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code && npm install -g prettier && npm install -g baedal && npm install -g @vscode/vsce && npm install -g ovsx",
+  "customizations": {
+    "vscode": {
+      "extensions": ["esbenp.prettier-vscode"],
+      "settings": {
+        "prettier.resolveGlobalModules": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  },
   "remoteUser": "root"
 }
