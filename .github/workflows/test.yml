@@ -1,20 +1,20 @@
 name: Test
 
 on:
-pull_request:
-  types:
-    - synchronize
-    - opened
-    - reopened
-    - unlocked
-  paths:
-    - "src/**"
-push:
-  branches:
-    - main
-  paths:
-    - "src/**"
-workflow_dispatch:
+  pull_request:
+    types:
+      - synchronize
+      - opened
+      - reopened
+      - unlocked
+    paths:
+      - "src/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+  workflow_dispatch:
 
 jobs:
   test:
