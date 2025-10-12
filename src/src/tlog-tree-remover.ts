@@ -6,11 +6,7 @@ import {
   TlogItemTreeItem,
   TlogTreeDataProvider,
 } from "./tlog-tree-provider";
-import {
-  TLOG_PATTERN,
-  CONFIRMATION_YES,
-  CONFIRMATION_NO,
-} from "./core/tlog-patterns";
+import { TLOG_PATTERN, CONFIRMATION_YES, CONFIRMATION_NO } from "./core/tlog-patterns";
 
 export const handleRemoveFilesTlogs = async (
   fileItem: TlogFileTreeItem,
@@ -30,9 +26,7 @@ export const handleRemoveFilesTlogs = async (
   try {
     const success = await removeFromFile(filePath);
     if (success) {
-      vscode.window.showInformationMessage(
-        `Removed ${tlogCount} TLOG(s) from ${fileItem.label}`
-      );
+      vscode.window.showInformationMessage(`Removed ${tlogCount} TLOG(s) from ${fileItem.label}`);
       treeProvider.refresh();
     } else {
       vscode.window.showErrorMessage("Failed to remove TLOGs");
@@ -120,9 +114,7 @@ const removeFromFile = async (filePath: string): Promise<boolean> => {
   }
 };
 
-const removeSingleTlogFromFile = async (
-  tlogItem: TlogItem
-): Promise<boolean> => {
+const removeSingleTlogFromFile = async (tlogItem: TlogItem): Promise<boolean> => {
   try {
     const uri = vscode.Uri.file(tlogItem.filePath);
     const document = await vscode.workspace.openTextDocument(uri);
@@ -141,9 +133,7 @@ const removeSingleTlogFromFile = async (
   }
 };
 
-const findTlogLinesInDocument = (
-  document: vscode.TextDocument
-): vscode.Range[] => {
+const findTlogLinesInDocument = (document: vscode.TextDocument): vscode.Range[] => {
   const tlogLines: vscode.Range[] = [];
 
   for (let i = 0; i < document.lineCount; i++) {

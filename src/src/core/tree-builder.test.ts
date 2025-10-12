@@ -1,33 +1,28 @@
-import {
-  groupTlogsByFile,
-  buildDirectoryTree,
-  TlogFileGroup,
-  TlogDirectoryNode,
-} from "./tree-builder";
 import { ParsedRipgrepResult } from "./tlog-search";
+import { groupTlogsByFile, buildDirectoryTree, TlogFileGroup } from "./tree-builder";
 
 describe("Tree Builder Functions", () => {
   describe("groupTlogsByFile", () => {
     test("groups TLOGs by file correctly", () => {
       const searchResults = ["result1", "result2"];
-      const mockParseFunction = (content: string): ParsedRipgrepResult[] => [
+      const mockParseFunction = (): ParsedRipgrepResult[] => [
         {
-          filePath: "/path/file1.ts",
-          line: 10,
           column: 5,
           content: 'console.log("[TLOG] first");',
+          filePath: "/path/file1.ts",
+          line: 10,
         },
         {
-          filePath: "/path/file1.ts",
-          line: 20,
           column: 5,
           content: 'console.log("[TLOG] second");',
+          filePath: "/path/file1.ts",
+          line: 20,
         },
         {
-          filePath: "/path/file2.ts",
-          line: 15,
           column: 3,
           content: 'console.log("[TLOG] third");',
+          filePath: "/path/file2.ts",
+          line: 15,
         },
       ];
 
@@ -44,7 +39,7 @@ describe("Tree Builder Functions", () => {
 
     test("returns empty array when no results", () => {
       const searchResults: string[] = [];
-      const mockParseFunction = (content: string): ParsedRipgrepResult[] => [];
+      const mockParseFunction = (): ParsedRipgrepResult[] => [];
 
       const groups = groupTlogsByFile(searchResults, mockParseFunction);
 
@@ -53,24 +48,24 @@ describe("Tree Builder Functions", () => {
 
     test("handles single file with multiple TLOGs", () => {
       const searchResults = ["result1"];
-      const mockParseFunction = (content: string): ParsedRipgrepResult[] => [
+      const mockParseFunction = (): ParsedRipgrepResult[] => [
         {
-          filePath: "/path/single.ts",
-          line: 5,
           column: 0,
           content: 'console.log("[TLOG] first");',
+          filePath: "/path/single.ts",
+          line: 5,
         },
         {
-          filePath: "/path/single.ts",
-          line: 10,
           column: 0,
           content: 'console.log("[TLOG] second");',
+          filePath: "/path/single.ts",
+          line: 10,
         },
         {
-          filePath: "/path/single.ts",
-          line: 15,
           column: 0,
           content: 'console.log("[TLOG] third");',
+          filePath: "/path/single.ts",
+          line: 15,
         },
       ];
 
@@ -86,24 +81,24 @@ describe("Tree Builder Functions", () => {
 
     test("sorts TLOG items by line number", () => {
       const searchResults = ["result1"];
-      const mockParseFunction = (content: string): ParsedRipgrepResult[] => [
+      const mockParseFunction = (): ParsedRipgrepResult[] => [
         {
-          filePath: "/path/file.ts",
-          line: 20,
           column: 0,
           content: 'console.log("[TLOG] third");',
+          filePath: "/path/file.ts",
+          line: 20,
         },
         {
-          filePath: "/path/file.ts",
-          line: 5,
           column: 0,
           content: 'console.log("[TLOG] first");',
+          filePath: "/path/file.ts",
+          line: 5,
         },
         {
-          filePath: "/path/file.ts",
-          line: 10,
           column: 0,
           content: 'console.log("[TLOG] second");',
+          filePath: "/path/file.ts",
+          line: 10,
         },
       ];
 
@@ -202,11 +197,7 @@ describe("Tree Builder Functions", () => {
       const srcNode = tree.children.get("src")!;
       expect(srcNode.files).toHaveLength(3);
       expect(srcNode.files.map((f) => f.filePath)).toEqual(
-        expect.arrayContaining([
-          "/root/src/file1.ts",
-          "/root/src/file2.ts",
-          "/root/src/file3.ts",
-        ])
+        expect.arrayContaining(["/root/src/file1.ts", "/root/src/file2.ts", "/root/src/file3.ts"])
       );
     });
 

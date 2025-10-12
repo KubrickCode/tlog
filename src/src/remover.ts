@@ -1,11 +1,7 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
 import { buildRipgrepCommand, parseRipgrepResults } from "./core/tlog-search";
-import {
-  TLOG_PATTERN,
-  CONFIRMATION_YES,
-  CONFIRMATION_NO,
-} from "./core/tlog-patterns";
+import { TLOG_PATTERN, CONFIRMATION_YES, CONFIRMATION_NO } from "./core/tlog-patterns";
 
 type RemovalScope = "current" | "workspace";
 
@@ -95,9 +91,7 @@ const getActiveEditor = (): vscode.TextEditor | null => {
   return editor;
 };
 
-export const findTlogLinesInDocument = (
-  document: vscode.TextDocument
-): vscode.Range[] => {
+export const findTlogLinesInDocument = (document: vscode.TextDocument): vscode.Range[] => {
   const tlogLines: vscode.Range[] = [];
 
   for (let i = 0; i < document.lineCount; i++) {
@@ -138,16 +132,9 @@ const searchTlogsWithRipgrep = (workspacePath: string): Promise<string[]> => {
   });
 };
 
-const confirmRemoval = async (
-  count: number,
-  scope: string
-): Promise<boolean> => {
+const confirmRemoval = async (count: number, scope: string): Promise<boolean> => {
   const message = `Found ${count} TLOG statement(s) in ${scope}. Remove them?`;
-  const result = await vscode.window.showWarningMessage(
-    message,
-    CONFIRMATION_YES,
-    CONFIRMATION_NO
-  );
+  const result = await vscode.window.showWarningMessage(message, CONFIRMATION_YES, CONFIRMATION_NO);
   return result === CONFIRMATION_YES;
 };
 
@@ -164,9 +151,7 @@ const deleteLinesFromDocument = async (
   return await vscode.workspace.applyEdit(edit);
 };
 
-const deleteLinesFromSearchResults = async (
-  searchResults: string[]
-): Promise<boolean> => {
+const deleteLinesFromSearchResults = async (searchResults: string[]): Promise<boolean> => {
   const edit = new vscode.WorkspaceEdit();
   const fileLineMap = parseSearchResults(searchResults);
 
@@ -188,12 +173,12 @@ const deleteLinesFromSearchResults = async (
 export const processSearchResults = (
   searchResults: string[]
 ): Array<{ filePath: string; lineNumber: number }> => {
-  const stdout = searchResults.join('\n');
+  const stdout = searchResults.join("\n");
   const parsedResults = parseRipgrepResults(stdout);
-  
-  return parsedResults.map(result => ({
+
+  return parsedResults.map((result) => ({
     filePath: result.filePath,
-    lineNumber: result.line
+    lineNumber: result.line,
   }));
 };
 
@@ -217,11 +202,11 @@ export const createFileLineMap = (
 };
 
 const parseSearchResults = (results: string[]): Map<string, number[]> => {
-  const stdout = results.join('\n');
+  const stdout = results.join("\n");
   const parsedResults = parseRipgrepResults(stdout);
-  const processedResults = parsedResults.map(result => ({
+  const processedResults = parsedResults.map((result) => ({
     filePath: result.filePath,
-    lineNumber: result.line
+    lineNumber: result.line,
   }));
   return createFileLineMap(processedResults);
 };
@@ -232,9 +217,7 @@ const showNoTlogsFound = (scope: string) => {
 
 const showRemovalResult = (success: boolean, count: number, scope: string) => {
   if (success) {
-    vscode.window.showInformationMessage(
-      `Removed ${count} TLOG statement(s) from ${scope}`
-    );
+    vscode.window.showInformationMessage(`Removed ${count} TLOG statement(s) from ${scope}`);
     return;
   }
 

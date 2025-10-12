@@ -2,10 +2,10 @@ import * as path from "path";
 import { ParsedRipgrepResult } from "./tlog-search";
 
 export type TlogItem = {
-  filePath: string;
-  line: number;
   column: number;
   content: string;
+  filePath: string;
+  line: number;
 };
 
 export type TlogFileGroup = {
@@ -14,10 +14,10 @@ export type TlogFileGroup = {
 };
 
 export type TlogDirectoryNode = {
-  name: string;
-  fullPath: string;
   children: Map<string, TlogDirectoryNode>;
   files: TlogFileGroup[];
+  fullPath: string;
+  name: string;
 };
 
 export const groupTlogsByFile = (
@@ -29,10 +29,10 @@ export const groupTlogsByFile = (
 
   parsedResults.forEach((result) => {
     const tlogItem: TlogItem = {
-      filePath: result.filePath,
-      line: result.line,
       column: result.column,
       content: result.content,
+      filePath: result.filePath,
+      line: result.line,
     };
 
     if (!groups.has(result.filePath)) {
@@ -52,10 +52,10 @@ export const buildDirectoryTree = (
   workspacePath: string
 ): TlogDirectoryNode => {
   const root: TlogDirectoryNode = {
-    name: "",
-    fullPath: workspacePath,
     children: new Map(),
     files: [],
+    fullPath: workspacePath,
+    name: "",
   };
 
   groups.forEach((group) => {
@@ -71,10 +71,10 @@ export const buildDirectoryTree = (
       currentPath = path.join(currentPath, part);
       if (!currentNode.children.has(part)) {
         currentNode.children.set(part, {
-          name: part,
-          fullPath: currentPath,
           children: new Map(),
           files: [],
+          fullPath: currentPath,
+          name: part,
         });
       }
       currentNode = currentNode.children.get(part)!;

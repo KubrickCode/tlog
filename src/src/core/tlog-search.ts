@@ -1,10 +1,10 @@
 import { rgPath } from "@vscode/ripgrep";
 
 export type ParsedRipgrepResult = {
-  filePath: string;
-  line: number;
   column: number;
   content: string;
+  filePath: string;
+  line: number;
 };
 
 const RIPGREP_SEARCH_PATTERN = "console.log.*[TLOG]";
@@ -29,18 +29,18 @@ const parseJsonLine = (line: string): ParsedRipgrepResult | null => {
 
     if (json.type !== "match") return null;
 
-    const { path, lines, line_number } = json.data;
+    const { line_number, lines, path } = json.data;
     const matchData = json.data.submatches?.[0];
 
     if (!path || !lines || !line_number || !matchData) return null;
 
     return {
-      filePath: path.text,
-      line: line_number - 1, // Convert to 0-based
       column: matchData.start,
       content: lines.text.trim(),
+      filePath: path.text,
+      line: line_number - 1, // Convert to 0-based
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 };

@@ -11,15 +11,11 @@ import {
 } from "./core/tree-builder";
 import { TlogFileWatcher } from "./file-watcher";
 
-export class TlogTreeDataProvider
-  implements vscode.TreeDataProvider<TlogTreeItem>
-{
-  private _onDidChangeTreeData: vscode.EventEmitter<
-    TlogTreeItem | undefined | null | void
-  > = new vscode.EventEmitter<TlogTreeItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<
-    TlogTreeItem | undefined | null | void
-  > = this._onDidChangeTreeData.event;
+export class TlogTreeDataProvider implements vscode.TreeDataProvider<TlogTreeItem> {
+  private _onDidChangeTreeData: vscode.EventEmitter<TlogTreeItem | undefined | null | void> =
+    new vscode.EventEmitter<TlogTreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<TlogTreeItem | undefined | null | void> =
+    this._onDidChangeTreeData.event;
 
   private rootNode: TlogDirectoryNode | null = null;
   private workspacePath: string = "";
@@ -63,9 +59,7 @@ export class TlogTreeDataProvider
     }
 
     if (element instanceof TlogFileTreeItem) {
-      return Promise.resolve(
-        element.group.items.map((item) => new TlogItemTreeItem(item))
-      );
+      return Promise.resolve(element.group.items.map((item) => new TlogItemTreeItem(item)));
     }
 
     return Promise.resolve([]);
@@ -85,10 +79,8 @@ export class TlogTreeDataProvider
     }
 
     return children.sort((a, b) => {
-      if (a instanceof TlogDirectoryTreeItem && b instanceof TlogFileTreeItem)
-        return -1;
-      if (a instanceof TlogFileTreeItem && b instanceof TlogDirectoryTreeItem)
-        return 1;
+      if (a instanceof TlogDirectoryTreeItem && b instanceof TlogFileTreeItem) return -1;
+      if (a instanceof TlogFileTreeItem && b instanceof TlogDirectoryTreeItem) return 1;
       return a.label!.localeCompare(b.label!);
     });
   }
@@ -105,10 +97,8 @@ export class TlogTreeDataProvider
     }
 
     return children.sort((a, b) => {
-      if (a instanceof TlogDirectoryTreeItem && b instanceof TlogFileTreeItem)
-        return -1;
-      if (a instanceof TlogFileTreeItem && b instanceof TlogDirectoryTreeItem)
-        return 1;
+      if (a instanceof TlogDirectoryTreeItem && b instanceof TlogFileTreeItem) return -1;
+      if (a instanceof TlogFileTreeItem && b instanceof TlogDirectoryTreeItem) return 1;
       return a.label!.localeCompare(b.label!);
     });
   }
@@ -196,10 +186,7 @@ export class TlogDirectoryTreeItem extends TlogTreeItem {
 
 export class TlogFileTreeItem extends TlogTreeItem {
   constructor(public readonly group: TlogFileGroup) {
-    super(
-      path.basename(group.filePath),
-      vscode.TreeItemCollapsibleState.Expanded
-    );
+    super(path.basename(group.filePath), vscode.TreeItemCollapsibleState.Expanded);
 
     this.tooltip = group.filePath;
     this.description = `(${group.items.length})`;
@@ -211,10 +198,7 @@ export class TlogFileTreeItem extends TlogTreeItem {
 export class TlogItemTreeItem extends TlogTreeItem {
   constructor(public readonly item: TlogItem) {
     const tlogContent = TlogItemTreeItem.extractTlogMessage(item.content);
-    super(
-      `Line ${item.line + 1}: ${tlogContent}`,
-      vscode.TreeItemCollapsibleState.None
-    );
+    super(`Line ${item.line + 1}: ${tlogContent}`, vscode.TreeItemCollapsibleState.None);
 
     this.tooltip = item.content;
     this.contextValue = "tlogItem";

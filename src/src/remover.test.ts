@@ -1,8 +1,4 @@
-import {
-  processSearchResults,
-  createFileLineMap,
-  findTlogLinesInDocument,
-} from "./remover";
+import { processSearchResults, createFileLineMap, findTlogLinesInDocument } from "./remover";
 
 describe("Remover Functions", () => {
   describe("processSearchResults", () => {
@@ -76,8 +72,7 @@ describe("Remover Functions", () => {
     });
 
     test("handles empty processed results", () => {
-      const processedResults: Array<{ filePath: string; lineNumber: number }> =
-        [];
+      const processedResults: Array<{ filePath: string; lineNumber: number }> = [];
 
       const fileLineMap = createFileLineMap(processedResults);
 

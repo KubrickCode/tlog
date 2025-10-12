@@ -8,4 +8,3 @@ services:
       - ..:/workspaces/tlog:delegated
       - /var/run/docker.sock:/var/run/docker.sock
     command: sleep infinity
-

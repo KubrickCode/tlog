@@ -8,9 +8,7 @@ import {
 describe("TLOG Pattern Matching", () => {
   describe("TLOG_PATTERN regex", () => {
     test("matches console.log with [TLOG] prefix", () => {
-      expect(TLOG_PATTERN.test('console.log("[TLOG] test message");')).toBe(
-        true
-      );
+      expect(TLOG_PATTERN.test('console.log("[TLOG] test message");')).toBe(true);
     });
 
     test("does not match regular console.log without [TLOG]", () => {
@@ -40,9 +38,7 @@ describe("TLOG Pattern Matching", () => {
 
     test("matches with complex message content", () => {
       expect(
-        TLOG_PATTERN.test(
-          'console.log("[TLOG] user ${name} logged in at " + new Date());'
-        )
+        TLOG_PATTERN.test('console.log("[TLOG] user ${name} logged in at " + new Date());')
       ).toBe(true);
     });
   });
@@ -58,9 +54,7 @@ describe("TLOG Pattern Matching", () => {
     });
 
     test("is valid template format", () => {
-      expect(TLOG_SNIPPET_TEMPLATE).toBe(
-        "console.log('[TLOG] ${1:message}');${0}"
-      );
+      expect(TLOG_SNIPPET_TEMPLATE).toBe("console.log('[TLOG] ${1:message}');${0}");
     });
   });
 

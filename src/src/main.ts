@@ -2,10 +2,7 @@ import * as vscode from "vscode";
 import { handleInsertTlog } from "./inserter";
 import { handleRemoveAllTlogs } from "./remover";
 import { TlogTreeDataProvider } from "./tlog-tree-provider";
-import {
-  handleOpenTlogLocation,
-  handleRefreshTlogTree,
-} from "./tlog-navigator";
+import { handleOpenTlogLocation, handleRefreshTlogTree } from "./tlog-navigator";
 import {
   handleRemoveFilesTlogs,
   handleRemoveDirectoryTlogs,
@@ -15,10 +12,7 @@ import {
 export const activate = (context: vscode.ExtensionContext) => {
   const tlogTreeProvider = new TlogTreeDataProvider();
 
-  const insertCommand = vscode.commands.registerCommand(
-    "tlog.insertTlog",
-    handleInsertTlog
-  );
+  const insertCommand = vscode.commands.registerCommand("tlog.insertTlog", handleInsertTlog);
   const removeCommand = vscode.commands.registerCommand(
     "tlog.removeAllTlogs",
     handleRemoveAllTlogs
@@ -27,9 +21,8 @@ export const activate = (context: vscode.ExtensionContext) => {
     "tlog.openTlogLocation",
     handleOpenTlogLocation
   );
-  const refreshTreeCommand = vscode.commands.registerCommand(
-    "tlog.refreshTlogTree",
-    () => handleRefreshTlogTree(tlogTreeProvider)
+  const refreshTreeCommand = vscode.commands.registerCommand("tlog.refreshTlogTree", () =>
+    handleRefreshTlogTree(tlogTreeProvider)
   );
   const removeFileTlogsCommand = vscode.commands.registerCommand(
     "tlog.removeFilesTlogs",
@@ -37,8 +30,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   );
   const removeDirectoryTlogsCommand = vscode.commands.registerCommand(
     "tlog.removeDirectoryTlogs",
-    (directoryItem) =>
-      handleRemoveDirectoryTlogs(directoryItem, tlogTreeProvider)
+    (directoryItem) => handleRemoveDirectoryTlogs(directoryItem, tlogTreeProvider)
   );
   const removeSingleTlogCommand = vscode.commands.registerCommand(
     "tlog.removeSingleTlog",
