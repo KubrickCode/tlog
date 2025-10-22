@@ -475,10 +475,10 @@
     https-proxy-agent "^7.0.0"
     tslib "^2.6.2"
 
-"@vscode/ripgrep@1.15.14":
-  version "1.15.14"
-  resolved "https://registry.yarnpkg.com/@vscode/ripgrep/-/ripgrep-1.15.14.tgz#c5930ecd1eb37e83a9a8f4a85623041601b76392"
-  integrity sha512-/G1UJPYlm+trBWQ6cMO3sv6b8D1+G16WaJH1/DSqw32JOVlzgZbLkDxRyzIpTpv30AcYGMkCf5tUqGlW6HbDWw==
+"@vscode/ripgrep@1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@vscode/ripgrep/-/ripgrep-1.17.0.tgz#5ae8d9bf1483b3413025eea61fb28fa0a3f906bd"
+  integrity sha512-mBRKm+ASPkUcw4o9aAgfbusIu6H4Sdhw09bjeP1YOBFTJEZAnrnk6WZwzv8NEjgC82f7ILvhmb1WIElSugea6g==
   dependencies:
     https-proxy-agent "^7.0.2"
     proxy-from-env "^1.1.0"

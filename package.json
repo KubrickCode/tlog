@@ -133,6 +133,6 @@
     "ovsx": "0.10.6"
   },
   "dependencies": {
-    "@vscode/ripgrep": "1.15.14"
+    "@vscode/ripgrep": "1.17.0"
   }
 }
